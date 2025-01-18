@@ -1,0 +1,86 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    max-width: 1366px;
+    width: 90%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+header {
+    height: 10%;
+    background-color: pink;
+}
+
+main {
+    height: 85%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-areas: "container controller";
+    grid-template-columns: 80% 20%;
+    grid-template-rows: 100%;
+}
+
+#container {
+    grid-area: container;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #ccc;
+}
+
+#controller {
+    grid-area: controller;
+    background-color: bisque;
+}
+
+.hide-div {
+    display: none;
+}
+
+.turn-on {
+    display: block;
+}
+
+.row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 1px auto;
+}
+
+.cell {
+    background-color: #fff;
+    display: inline-block;
+    border-radius: 20%;
+    text-align: center;
+}
+
+.visiting {
+    background-color: blue;
+}
+
+.minPath {
+    background-color: red;
+}
+
+/* Chướng ngại vật trong mê cung */
+.obstacle {
+    background-color: #000;
+}
+
+footer {
+    height: 5%;
+    background-color: green;
+    text-align: center;
+}
