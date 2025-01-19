@@ -8,6 +8,11 @@ interface Infor {
     weight: number;
 }
 
+interface Point {
+    i: number;
+    j: number;
+}
+
 type HandleClickCell = (e: MouseEvent) => void;
 
 // Tạo một hàng bằng DOM
@@ -88,3 +93,55 @@ export function drawGraph(container: HTMLDivElement, m: number, n: number, weigh
     }
 }
 
+
+function getPointFromVertex(u: number, n: number): Point {
+    return {
+        i: Math.floor((u - 1) / n),
+        j: (u - 1) % n
+    }
+}
+
+function delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Tô màu cho đường đi tới
+export async function setVisitingPath(path: Array<number>, n: number, ms: number): Promise<void> {
+    for (let u of path) {
+        const uPoint: Point = getPointFromVertex(u, n);
+        const cell: HTMLSpanElement = document.getElementById(`${uPoint.i}_${uPoint.j}`) as HTMLSpanElement;
+        cell.classList.add("visiting");
+        // nếu đặt trên có thể xảy ra mâu thuẫn khi dùng confirm ở hàm Dijsktra
+        await delay(ms);
+    }
+}
+
+// Xóa màu cho đường đi lùi
+export async function resetVisitingPath(path: Array<number>, n: number, ms: number): Promise<void> {
+    for (let u of path) {
+        const uPoint: Point = getPointFromVertex(u, n);
+        const cell: HTMLSpanElement = document.getElementById(`${uPoint.i}_${uPoint.j}`) as HTMLSpanElement;
+        cell.classList.remove("visiting");
+        // nếu đặt trên có thể xảy ra mâu thuẫn khi dùng confirm ở hàm Dijsktra
+        await delay(ms);
+    }
+}
+
+// Tô màu cho đường đi ngắn nhất
+export async function setMinPath(path: Array<number>, n: number, ms: number): Promise<void> {
+    for (let u of path) {
+        const uPoint: Point = getPointFromVertex(u, n);
+        const cell: HTMLSpanElement = document.getElementById(`${uPoint.i}_${uPoint.j}`) as HTMLSpanElement;
+        cell.classList.add("minPath");
+        await delay(ms);
+    }
+}
+
+// Xóa màu cho đường đi ngắn nhất
+export function resetMinPath(path: Array<number>, n: number): void {
+    for (let u of path) {
+        const uPoint: Point = getPointFromVertex(u, n);
+        const cell: HTMLSpanElement = document.getElementById(`${uPoint.i}_${uPoint.j}`) as HTMLSpanElement;
+        cell.classList.remove("minPath");
+    }
+}

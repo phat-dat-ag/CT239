@@ -1,13 +1,32 @@
 import Graph from "./Graph.js";
 import { drawGraph } from "./draw.js";
-let G = new Graph();
-let globalPoint = { i: 0, j: 0 };
+var G = new Graph();
+var globalPoint = { i: 0, j: 0 };
+var s = 0, t = 0;
+var ms = 2000;
 const container = document.getElementById("container");
 const pannel = document.getElementById("pannel");
 const inforCell = document.getElementById("infor-cell");
 const weightInput = document.getElementById("weight-input");
 const updateWeightButton = document.getElementById("updat-weight-button");
+const menu = document.getElementById("menu");
+const speedSelectTag = document.getElementById("speed-select");
+const startVertexInput = document.getElementById("start-vertex-input");
+const endVertexInput = document.getElementById("end-vertex-input");
+const runButton = document.getElementById("run");
 const button = document.getElementById("random");
+// Xử lý nhập s
+startVertexInput.onchange = (e) => {
+    const target = e.target;
+    s = parseInt(target.value);
+    startVertexInput.value = target.value;
+};
+// Xử lý nhập t
+endVertexInput.onchange = (e) => {
+    const target = e.target;
+    t = parseInt(target.value);
+    endVertexInput.value = target.value;
+};
 function randomFromZeroTo(number) {
     if (number <= 0)
         return 0;
@@ -65,10 +84,45 @@ button.onclick = function () {
         const n = G.getColumnCount();
         const weightMatrix = G.getWeightMatrix();
         drawGraph(container, m, n, weightMatrix, handleClickCell);
+        // Cập nhật max trong ô input s và t
+        startVertexInput.max = `${m * n}`;
+        startVertexInput.value = "0";
+        endVertexInput.max = `${m * n}`;
+        endVertexInput.value = "0";
+        // Bật Menu tùy chỉnh lên
+        menu.classList.add("turn-on");
     }
     else {
         confirm("Ma trận không hợp lệ");
     }
+};
+const speedOptions = [
+    { speed: 2000, title: "Rất chậm" },
+    { speed: 1000, title: "Chậm" },
+    { speed: 500, title: "Bình thường" },
+    { speed: 100, title: "Nhanh" },
+    { speed: 10, title: "Rất nhanh" }
+];
+// Cập nhật thẻ select chọn tốc độ
+for (let option of speedOptions) {
+    const op = document.createElement("option");
+    op.value = `${option.speed}`;
+    op.innerText = option.title;
+    speedSelectTag.appendChild(op);
+}
+speedSelectTag.onchange = (e) => {
+    const target = e.target;
+    ms = parseInt(target.value);
+};
+// Thực thi thuật toán Moore Dijkstra
+runButton.onclick = function () {
+    // typeof NaN là number nên không thể kiểm tra typeof
+    if (isNaN(s))
+        confirm("Đỉnh bắt đầu không hợp lệ");
+    else if (isNaN(t))
+        confirm("Đỉnh kết thúc không hợp lệ");
+    else
+        G.Dijkstra(s, t, ms);
 };
 // Cập nhật trọng số
 updateWeightButton.onclick = function (e) {

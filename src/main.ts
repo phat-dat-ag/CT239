@@ -6,8 +6,15 @@ interface Point {
     j: number;
 }
 
-let G = new Graph();
-let globalPoint: Point = { i: 0, j: 0 };
+interface Speed {
+    speed: number;
+    title: string;
+}
+
+var G = new Graph();
+var globalPoint: Point = { i: 0, j: 0 };
+var s: number = 0, t: number = 0;
+var ms: number = 2000;
 
 const container: HTMLDivElement = document.getElementById("container") as HTMLDivElement;
 
@@ -17,7 +24,26 @@ const weightInput: HTMLInputElement = document.getElementById("weight-input") as
 const updateWeightButton: HTMLButtonElement = document.getElementById("updat-weight-button") as HTMLButtonElement;
 
 
+const menu: HTMLDivElement = document.getElementById("menu") as HTMLDivElement;
+const speedSelectTag: HTMLSelectElement = document.getElementById("speed-select") as HTMLSelectElement;
+const startVertexInput: HTMLInputElement = document.getElementById("start-vertex-input") as HTMLInputElement;
+const endVertexInput: HTMLInputElement = document.getElementById("end-vertex-input") as HTMLInputElement;
+const runButton: HTMLButtonElement = document.getElementById("run") as HTMLButtonElement;
+
 const button: HTMLButtonElement = document.getElementById("random") as HTMLButtonElement;
+
+// Xử lý nhập s
+startVertexInput.onchange = (e: Event): void => {
+    const target = e.target as HTMLInputElement;
+    s = parseInt(target.value);
+    startVertexInput.value = target.value;
+}
+// Xử lý nhập t
+endVertexInput.onchange = (e: Event): void => {
+    const target = e.target as HTMLInputElement;
+    t = parseInt(target.value);
+    endVertexInput.value = target.value;
+}
 
 
 function randomFromZeroTo(number: number): number {
@@ -82,10 +108,49 @@ button.onclick = function (): void {
         const m: number = G.getRowCount();
         const n: number = G.getColumnCount();
         const weightMatrix: Array<Array<number>> = G.getWeightMatrix();
-        drawGraph(container, m, n, weightMatrix, handleClickCell)
+        drawGraph(container, m, n, weightMatrix, handleClickCell);
+        // Cập nhật max trong ô input s và t
+        startVertexInput.max = `${m * n}`;
+        startVertexInput.value = "0";
+        endVertexInput.max = `${m * n}`;
+        endVertexInput.value = "0";
+        // Bật Menu tùy chỉnh lên
+        menu.classList.add("turn-on");
     } else {
         confirm("Ma trận không hợp lệ");
     }
+}
+
+const speedOptions: Array<Speed> = [
+    { speed: 2000, title: "Rất chậm" },
+    { speed: 1000, title: "Chậm" },
+    { speed: 500, title: "Bình thường" },
+    { speed: 100, title: "Nhanh" },
+    { speed: 10, title: "Rất nhanh" }
+]
+
+// Cập nhật thẻ select chọn tốc độ
+for (let option of speedOptions) {
+    const op: HTMLOptionElement = document.createElement("option");
+    op.value = `${option.speed}`;
+    op.innerText = option.title;
+    speedSelectTag.appendChild(op);
+}
+
+speedSelectTag.onchange = (e: Event): void => {
+    const target: HTMLSelectElement = e.target as HTMLSelectElement;
+    ms = parseInt(target.value)
+}
+
+// Thực thi thuật toán Moore Dijkstra
+runButton.onclick = function (): void {
+    // typeof NaN là number nên không thể kiểm tra typeof
+    if (isNaN(s))
+        confirm("Đỉnh bắt đầu không hợp lệ");
+    else if (isNaN(t))
+        confirm("Đỉnh kết thúc không hợp lệ");
+    else
+        G.Dijkstra(s, t, ms);
 }
 
 // Cập nhật trọng số

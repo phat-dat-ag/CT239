@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 // Tạo một hàng bằng DOM
 function drawRow(idRow, rowSize) {
     const row = document.createElement("div");
@@ -65,5 +74,57 @@ export function drawGraph(container, m, n, weightMatrix, handleClickCell) {
             row.appendChild(cell);
         }
         container.appendChild(row);
+    }
+}
+function getPointFromVertex(u, n) {
+    return {
+        i: Math.floor((u - 1) / n),
+        j: (u - 1) % n
+    };
+}
+function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+// Tô màu cho đường đi tới
+export function setVisitingPath(path, n, ms) {
+    return __awaiter(this, void 0, void 0, function* () {
+        for (let u of path) {
+            const uPoint = getPointFromVertex(u, n);
+            const cell = document.getElementById(`${uPoint.i}_${uPoint.j}`);
+            cell.classList.add("visiting");
+            // nếu đặt trên có thể xảy ra mâu thuẫn khi dùng confirm ở hàm Dijsktra
+            yield delay(ms);
+        }
+    });
+}
+// Xóa màu cho đường đi lùi
+export function resetVisitingPath(path, n, ms) {
+    return __awaiter(this, void 0, void 0, function* () {
+        for (let u of path) {
+            const uPoint = getPointFromVertex(u, n);
+            const cell = document.getElementById(`${uPoint.i}_${uPoint.j}`);
+            cell.classList.remove("visiting");
+            // nếu đặt trên có thể xảy ra mâu thuẫn khi dùng confirm ở hàm Dijsktra
+            yield delay(ms);
+        }
+    });
+}
+// Tô màu cho đường đi ngắn nhất
+export function setMinPath(path, n, ms) {
+    return __awaiter(this, void 0, void 0, function* () {
+        for (let u of path) {
+            const uPoint = getPointFromVertex(u, n);
+            const cell = document.getElementById(`${uPoint.i}_${uPoint.j}`);
+            cell.classList.add("minPath");
+            yield delay(ms);
+        }
+    });
+}
+// Xóa màu cho đường đi ngắn nhất
+export function resetMinPath(path, n) {
+    for (let u of path) {
+        const uPoint = getPointFromVertex(u, n);
+        const cell = document.getElementById(`${uPoint.i}_${uPoint.j}`);
+        cell.classList.remove("minPath");
     }
 }

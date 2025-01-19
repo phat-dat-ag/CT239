@@ -1,10 +1,23 @@
-export const NO_EDGE = 500;
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+import { setMinPath, resetMinPath, setVisitingPath, resetVisitingPath } from "./draw.js";
+// Do phạm vi -99 đến 99 nên gắn 500 để là giá trị đặc biệt
+const NO_EDGE = 500;
+const OO = 999999999;
 const directions = [
     { i: -1, j: 0 },
     { i: 0, j: -1 },
     { i: 0, j: 1 },
     { i: 1, j: 0 }
 ];
+var minPath = [];
 function getVertexFromPoint(point, n) {
     return point.i * n + (point.j + 1);
 }
@@ -13,6 +26,50 @@ function getPointFromVertex(u, n) {
         i: Math.floor((u - 1) / n),
         j: (u - 1) % n
     };
+}
+function getPathTo(u, parents) {
+    const path = [];
+    do {
+        path.push(u);
+        u = parents[u];
+    } while (u !== -1);
+    return path.reverse();
+}
+function initVisitingPath(s, n, ms) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield setVisitingPath([s], n, ms);
+        return [s];
+    });
+}
+function updateVisitingPath(u, parents, visitingPath, n, ms) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (parents[u] === -1)
+            return;
+        if (parents[u] === visitingPath[visitingPath.length - 1]) {
+            // u là đỉnh tiếp theo trong visitingPath
+            visitingPath.push(u);
+            yield setVisitingPath([u], n, ms);
+        }
+        else {
+            // u KHÔNG là đỉnh tiếp theo trong visitingPath
+            let newPath = getPathTo(u, parents);
+            // Tìm giao điểm của 2 đường đi
+            let intersectIndex = 0;
+            let min_length = Math.min(visitingPath.length, newPath.length);
+            while (visitingPath[intersectIndex] === newPath[intersectIndex] && intersectIndex < min_length)
+                intersectIndex++;
+            // Cắt mảng để reset
+            const resetPath = visitingPath.slice(intersectIndex).reverse();
+            // reset lại màu
+            yield resetVisitingPath(resetPath, n, ms);
+            // Cắt lấy phần sẽ nối vào
+            let right = newPath.slice(intersectIndex);
+            // tô màu cho mảng mới
+            yield setVisitingPath(right, n, ms);
+            // Nối vào, cập nhật lại visitingPath
+            visitingPath.splice(intersectIndex, visitingPath.length - intersectIndex, ...right);
+        }
+    });
 }
 export default class Graph {
     constructor() {
@@ -186,5 +243,79 @@ export default class Graph {
             // Đưa đỉnh u về tọa độ
             this.updateEdgesFromNode(u);
         }
+    }
+    Dijkstra(s, t, ms) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const m = this.getRowCount();
+            const n = this.getColumnCount();
+            // Làm mới minPath trước đó
+            resetMinPath(minPath.reverse(), n);
+            minPath = [];
+            // Tập hợp chỉ chứa toàn đỉnh, không có chướng ngại vật
+            const vertices = this.getVertices();
+            const vertexCount = vertices.length;
+            console.log("Đường đi từ ", s, " đến ", t);
+            if (s <= 0 || s > m * n || !vertices.includes(s)) {
+                confirm(`Đỉnh bắt đầu là ${s}: không hợp lệ`);
+                return;
+            }
+            if (t <= 0 || t > m * n || !vertices.includes(t)) {
+                confirm(`Đỉnh kết thúc là ${t}: không hợp lệ`);
+                return;
+            }
+            // Khởi tạo 1 mảng chứa các đỉnh đang duyệt
+            let visitingPath = yield initVisitingPath(s, n, ms);
+            // Khởi tạo
+            const nodeCount = this.getNodeCount();
+            let distances = [], parents = [], visited = [];
+            for (let u = 1; u <= nodeCount; u++) {
+                distances[u] = OO;
+                parents[u] = 0;
+                visited[u] = false;
+            }
+            // Đánh dấu đỉnh s
+            distances[s] = 0;
+            visited[s] = false;
+            parents[s] = -1;
+            // Tìm đỉnh có đường đi nhỏ nhất, lặp lại tối đa vertexCount - 1 lần
+            // Khác với lý thuyết đồ thị bình thường
+            // Có trường hợp các đỉnh bị cô lập, không đi được đến tất cả các đỉnh còn lại được
+            for (let i = 0; i < vertexCount - 1; i++) {
+                let u = -1;
+                let min_distance = OO;
+                // Tìm đỉnh đang có distance nhỏ nhất
+                for (let vertex of vertices) {
+                    if (distances[vertex] < min_distance && !visited[vertex]) {
+                        min_distance = distances[vertex];
+                        u = vertex;
+                    }
+                }
+                // Có những trường hợp bị treo nên không thể tới được
+                // Đồ thị không liên thông
+                if (u === -1)
+                    continue;
+                visited[u] = true;
+                yield updateVisitingPath(u, parents, visitingPath, n, ms);
+                // Cập nhật đường đi đến các đỉnh lân cận
+                for (let v of vertices) {
+                    if (this.adjacent(u, v) && distances[u] + this.A[u][v] < distances[v]) {
+                        distances[v] = distances[u] + this.A[u][v];
+                        parents[v] = u;
+                    }
+                }
+            }
+            // Reset lại đường đi cuối cùng
+            visitingPath.reverse();
+            yield resetVisitingPath(visitingPath, n, ms);
+            // Hiển thị đường đi ngắn nhất
+            if (distances[t] !== OO) {
+                minPath = getPathTo(t, parents);
+                yield setMinPath(minPath, n, ms);
+                console.log("Độ dài: ", distances[t]);
+            }
+            else {
+                confirm(`Không có đường đi từ ${s} đến ${t}`);
+            }
+        });
     }
 }
