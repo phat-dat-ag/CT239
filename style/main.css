@@ -17,31 +17,39 @@ body {
 
 header {
     height: 10%;
-    background-color: pink;
+    background-color: #A6DCEF;
+    text-align: center;
 }
 
 main {
     height: 85%;
     margin: 0 auto;
     display: grid;
-    grid-template-areas: "container controller";
-    grid-template-columns: 80% 20%;
-    grid-template-rows: 100%;
+    grid-template-areas: 
+    "container controller"
+    "detail detail";
+    grid-template-columns: 76% 24%;
+    grid-template-rows: 70% 30%;
 }
 
 #container {
     grid-area: container;
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #ccc;
+    background-color: #E8E8E8;
 }
 
 #controller {
+    padding: 8px;
     grid-area: controller;
-    background-color: bisque;
+    background-color: #FFF5E1;
+}
+
+#detail{
+    grid-area: detail;
+    background-color: #E0F7FA;
 }
 
 .hide-div {
@@ -62,7 +70,7 @@ main {
 .cell {
     background-color: #fff;
     display: inline-block;
-    border-radius: 20%;
+    border-radius: 8px;
     text-align: center;
 }
 
@@ -81,6 +89,21 @@ main {
 
 footer {
     height: 5%;
-    background-color: green;
+    background-color: #A4B494;
     text-align: center;
+}
+
+button{
+    background-color:#F4A460;
+    border-radius: 8px;
+    padding: 4px;
+    margin: 2px;
+}
+
+.field-group{
+    height: 40px;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
 }

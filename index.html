@@ -10,18 +10,22 @@
 
 <body>
     <header>
-        <h1>Niên luận cơ sở ngành kỹ thuật phần mềm</h1>
-        <h2>Tìm đường đi ngắn nhất trong Mê cung số</h2>
+        <h1>Niên luận cơ sở ngành Kỹ thuật phần mềm</h1>
+        <h2>Tìm đường đi ngắn nhất trong Mê cung số với giải thuật Moore Dijkstra</h2>
     </header>
     <main>
         <div id="container"></div>
         <div id="controller">
-            Bảng điều khiển
-            <button id="random">Sinh ma trận ngẫu nhiên</button>
+            <h1>Bảng điều khiển</h1>
+            <div class="field-group">
+                <button id="random-matrix-button">Sinh ma trận ngẫu nhiên</button>
+            </div>
             <div id="pannel" class="hide-div">
                 <h3>Tùy chỉnh dữ liệu</h3>
-                <p id="infor-cell"></p>
-                <div id="value-toggle">
+                <div class="field-group">
+                    <p id="infor-cell"></p>
+                </div>
+                <div class="field-group">
                     <label for="weight-input">Trọng số</label>
                     <input id="weight-input" type="number" placeholder="Trọng số của ô" min="-99" max="99">
                     <button id="updat-weight-button">Cập nhật</button>
@@ -29,20 +33,30 @@
             </div>
             <div id="menu" class="hide-div">
                 <h3>Menu tùy chỉnh</h3>
-                <label for="speed-select">Tùy chọn tốc độ:</label>
-                <select name="" id="speed-select"></select>
-                <br>
-                <label for="start-vertex-input">Chọn đỉnh bắt đầu</label>
-                <input id="start-vertex-input" type="number" min="1" placeholder="Đỉnh s">
-                <label for="end-vertex-input">Chọn đỉnh kết thúc</label>
-                <input id="end-vertex-input" type="number" min="1" placeholder="Đỉnh t">
-                <button id="run">Thực thi thuật toán</button>
-                <button id="colorRun">Tô màu đồ thị</button>
-                <button id="BFS">Duyệt BFS</button>
+                <div class="field-group">
+                    <label for="speed-select">Chọn tốc độ:</label>
+                    <select name="" id="speed-select"></select>
+                </div>
+                <div class="field-group">
+                    <button id="run-Dijkstra-button">Moore Dijkstra</button>
+                    <button id="run-BFS-button">Duyệt BFS</button>
+                    <button id="run-DFS-button">Duyệt DFS</button>
+                </div>
+                <div class="field-group">
+                    <label for="start-vertex-input">Chọn đỉnh bắt đầu:</label>
+                    <input id="start-vertex-input" type="number" min="1" placeholder="s">
+                </div>
+                <div class="field-group">
+                    <label for="end-vertex-input">Chọn đỉnh kết thúc:</label>
+                    <input id="end-vertex-input" type="number" min="1" placeholder="t">
+                </div>
             </div>
         </div>
+        <div id="detail">Chi tiết thực thi thuật toán</div>
     </main>
-    <footer>Nguyễn Phát Đạt B2203498</footer>
+    <footer>
+        <h3>Nguyễn Phát Đạt B2203498</h3>
+    </footer>
 </body>
 <script type="module" src="./dist/main.js"></script>
 

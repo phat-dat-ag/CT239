@@ -5,16 +5,18 @@ var globalPoint = { i: 0, j: 0 };
 var s = 0, t = 0;
 var ms = 2000;
 const container = document.getElementById("container");
+// Bảng điều khiển
+const randomMatrixButton = document.getElementById("random-matrix-button");
 const pannel = document.getElementById("pannel");
 const inforCell = document.getElementById("infor-cell");
 const weightInput = document.getElementById("weight-input");
 const updateWeightButton = document.getElementById("updat-weight-button");
+// Menu tùy chỉnh
 const menu = document.getElementById("menu");
 const speedSelectTag = document.getElementById("speed-select");
 const startVertexInput = document.getElementById("start-vertex-input");
 const endVertexInput = document.getElementById("end-vertex-input");
-const runButton = document.getElementById("run");
-const button = document.getElementById("random");
+const runDijkstraButton = document.getElementById("run-Dijkstra-button");
 // Xử lý nhập s
 startVertexInput.onchange = (e) => {
     const target = e.target;
@@ -61,7 +63,7 @@ function handleClickCell(e) {
     inforCell.innerText = `Ô ${vertex}, Tọa độ: (${globalPoint.i}, ${globalPoint.j})`;
 }
 // Random ra ma trận
-button.onclick = function () {
+randomMatrixButton.onclick = function () {
     // Tắt pannel mỗi khi random lại
     pannel.classList.remove("turn-on");
     const rowCount = randomFromZeroTo(3) + 5;
@@ -115,7 +117,7 @@ speedSelectTag.onchange = (e) => {
     ms = parseInt(target.value);
 };
 // Thực thi thuật toán Moore Dijkstra
-runButton.onclick = function () {
+runDijkstraButton.onclick = function () {
     // typeof NaN là number nên không thể kiểm tra typeof
     if (isNaN(s))
         confirm("Đỉnh bắt đầu không hợp lệ");

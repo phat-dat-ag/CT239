@@ -17,20 +17,18 @@ var s: number = 0, t: number = 0;
 var ms: number = 2000;
 
 const container: HTMLDivElement = document.getElementById("container") as HTMLDivElement;
-
+// Bảng điều khiển
+const randomMatrixButton: HTMLButtonElement = document.getElementById("random-matrix-button") as HTMLButtonElement;
 const pannel: HTMLDivElement = document.getElementById("pannel") as HTMLDivElement;
 const inforCell: HTMLParagraphElement = document.getElementById("infor-cell") as HTMLParagraphElement;
 const weightInput: HTMLInputElement = document.getElementById("weight-input") as HTMLInputElement;
 const updateWeightButton: HTMLButtonElement = document.getElementById("updat-weight-button") as HTMLButtonElement;
-
-
+// Menu tùy chỉnh
 const menu: HTMLDivElement = document.getElementById("menu") as HTMLDivElement;
 const speedSelectTag: HTMLSelectElement = document.getElementById("speed-select") as HTMLSelectElement;
 const startVertexInput: HTMLInputElement = document.getElementById("start-vertex-input") as HTMLInputElement;
 const endVertexInput: HTMLInputElement = document.getElementById("end-vertex-input") as HTMLInputElement;
-const runButton: HTMLButtonElement = document.getElementById("run") as HTMLButtonElement;
-
-const button: HTMLButtonElement = document.getElementById("random") as HTMLButtonElement;
+const runDijkstraButton: HTMLButtonElement = document.getElementById("run-Dijkstra-button") as HTMLButtonElement;
 
 // Xử lý nhập s
 startVertexInput.onchange = (e: Event): void => {
@@ -85,7 +83,7 @@ function handleClickCell(e: Event): void {
 }
 
 // Random ra ma trận
-button.onclick = function (): void {
+randomMatrixButton.onclick = function (): void {
     // Tắt pannel mỗi khi random lại
     pannel.classList.remove("turn-on");
 
@@ -143,7 +141,7 @@ speedSelectTag.onchange = (e: Event): void => {
 }
 
 // Thực thi thuật toán Moore Dijkstra
-runButton.onclick = function (): void {
+runDijkstraButton.onclick = function (): void {
     // typeof NaN là number nên không thể kiểm tra typeof
     if (isNaN(s))
         confirm("Đỉnh bắt đầu không hợp lệ");
