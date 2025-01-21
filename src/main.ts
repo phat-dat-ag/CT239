@@ -6,43 +6,35 @@ interface Point {
     j: number;
 }
 
-interface Speed {
-    speed: number;
+interface Option {
+    methodID?: string;
+    algorithmID?: string;
+    speed?: number;
     title: string;
 }
 
+var file: File | null = null;
 var G = new Graph();
 var globalPoint: Point = { i: 0, j: 0 };
-var s: number = 0, t: number = 0;
-var ms: number = 2000;
 
 const container: HTMLDivElement = document.getElementById("container") as HTMLDivElement;
 // Bảng điều khiển
-const randomMatrixButton: HTMLButtonElement = document.getElementById("random-matrix-button") as HTMLButtonElement;
+const methodSelect: HTMLSelectElement = document.getElementById("method-select") as HTMLSelectElement;
+const fileInputArea: HTMLDivElement = document.getElementById("file-input-area") as HTMLDivElement;
+const createMatrixButton: HTMLButtonElement = document.getElementById("create-matrix-button") as HTMLButtonElement;
 const pannel: HTMLDivElement = document.getElementById("pannel") as HTMLDivElement;
 const inforCell: HTMLParagraphElement = document.getElementById("infor-cell") as HTMLParagraphElement;
 const weightInput: HTMLInputElement = document.getElementById("weight-input") as HTMLInputElement;
 const updateWeightButton: HTMLButtonElement = document.getElementById("updat-weight-button") as HTMLButtonElement;
+const exitButton: HTMLButtonElement = document.getElementById("exit-button") as HTMLButtonElement;
 // Menu tùy chỉnh
 const menu: HTMLDivElement = document.getElementById("menu") as HTMLDivElement;
 const speedSelectTag: HTMLSelectElement = document.getElementById("speed-select") as HTMLSelectElement;
+const algorithmTag: HTMLSelectElement = document.getElementById("algorithm-select") as HTMLSelectElement;
 const startVertexInput: HTMLInputElement = document.getElementById("start-vertex-input") as HTMLInputElement;
 const endVertexInput: HTMLInputElement = document.getElementById("end-vertex-input") as HTMLInputElement;
-const runDijkstraButton: HTMLButtonElement = document.getElementById("run-Dijkstra-button") as HTMLButtonElement;
-
-// Xử lý nhập s
-startVertexInput.onchange = (e: Event): void => {
-    const target = e.target as HTMLInputElement;
-    s = parseInt(target.value);
-    startVertexInput.value = target.value;
-}
-// Xử lý nhập t
-endVertexInput.onchange = (e: Event): void => {
-    const target = e.target as HTMLInputElement;
-    t = parseInt(target.value);
-    endVertexInput.value = target.value;
-}
-
+const endVertexInputDiv: HTMLDivElement = document.getElementById("end-vertex-input-div") as HTMLDivElement;
+const algorithmRunButton: HTMLButtonElement = document.getElementById("algorithm-run") as HTMLButtonElement;
 
 function randomFromZeroTo(number: number): number {
     if (number <= 0)
@@ -62,7 +54,43 @@ function checkInput(matrix: Array<Array<number>>): boolean {
     return true;
 }
 
-// Sự kiện click chọn 1 ô
+// USE CASE 1: TÙY CHỌN CÁCH SINH RA MA TRẬN
+const methodOptions: Array<Option> = [
+    { methodID: "0", title: "Ngẫu nhiên" },
+    { methodID: "1", title: "Đọc file" },
+]
+for (let method of methodOptions) {
+    const op: HTMLOptionElement = document.createElement("option") as HTMLOptionElement;
+    op.value = `${method.methodID}`;
+    op.innerText = method.title;
+    methodSelect.appendChild(op);
+}
+methodSelect.onchange = (e: Event): void => {
+    fileInputArea.replaceChildren();
+    const target = e.target as HTMLSelectElement;
+    const methodID = parseInt(target.value);
+
+    if (methodID === 0) file = null;
+    else if (methodID === 1) {
+        const input: HTMLInputElement = document.createElement("input");
+        input.id = "file-input"
+        input.type = "file";
+        input.accept = ".txt";
+
+        const fileGroup: HTMLDivElement = document.createElement("div");
+        fileGroup.classList.add("field-group");
+        fileGroup.appendChild(input);
+        // Sự kiện thay đổi file
+        input.onchange = (e: Event): void => {
+            const target: HTMLInputElement = e.target as HTMLInputElement;
+            if (target.files && target.files.length > 0)
+                file = target.files[0];
+        }
+        fileInputArea.appendChild(fileGroup);
+    }
+}
+
+// Dùng trong createMatrixButton: Hàm sự kiện click chọn 1 ô
 function handleClickCell(e: Event): void {
     pannel.classList.add("turn-on");
     inforCell.replaceChildren();
@@ -82,23 +110,52 @@ function handleClickCell(e: Event): void {
     inforCell.innerText = `Ô ${vertex}, Tọa độ: (${globalPoint.i}, ${globalPoint.j})`;
 }
 
-// Random ra ma trận
-randomMatrixButton.onclick = function (): void {
+// Dùng trong createMatrixButton: Hàm đọc file
+function readFileAsText(file: File): Promise<string> {
+    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject("Có lỗi khi đọc file");
+
+        reader.readAsText(file);
+    });
+}
+
+// Sinh ra ma trận
+createMatrixButton.onclick = async function (): Promise<void> {
     // Tắt pannel mỗi khi random lại
     pannel.classList.remove("turn-on");
-
-    const rowCount: number = randomFromZeroTo(3) + 5;
-    const columnCount: number = randomFromZeroTo(3) + 5;
     let matrix: Array<Array<number>> = [];
-    for (let i = 0; i < rowCount; i++) {
-        let row: Array<number> = [];
-        for (let j = 0; j < columnCount; j++) {
-            // Random dấu trước: xác suất 30% dấu âm
-            const sign: number = (randomFromZeroTo(10) <= 3) ? -1 : 1;
-            // Phạm vi -99<=...<=99
-            row.push(sign * randomFromZeroTo(99));
+
+    if (file) {
+        try {
+            const content: string = await readFileAsText(file);
+            // Tách thành danh sách các dòng
+            const rows: Array<string> = content.split("\n");
+            let stringArray: Array<string>;
+            for (let row of rows) {
+                let rowOfMatrix: Array<number> = [];
+                stringArray = row.split(" ");
+                for (let str of stringArray)
+                    rowOfMatrix.push(parseInt(str));
+                matrix.push(rowOfMatrix);
+            }
+        } catch (err) {
+            console.log("Lỗi đọc file: ", err);
         }
-        matrix.push(row);
+    } else {
+        const rowCount: number = randomFromZeroTo(3) + 5;
+        const columnCount: number = randomFromZeroTo(3) + 5;
+        for (let i = 0; i < rowCount; i++) {
+            let row: Array<number> = [];
+            for (let j = 0; j < columnCount; j++) {
+                // Random dấu trước: xác suất 20% dấu âm
+                const sign: number = (randomFromZeroTo(10) <= 2) ? -1 : 1;
+                // Phạm vi -99<=...<=99
+                row.push(sign * randomFromZeroTo(99));
+            }
+            matrix.push(row);
+        }
     }
     if (checkInput(matrix)) {
         // Class Graph chính thức được tạo
@@ -107,11 +164,14 @@ randomMatrixButton.onclick = function (): void {
         const n: number = G.getColumnCount();
         const weightMatrix: Array<Array<number>> = G.getWeightMatrix();
         drawGraph(container, m, n, weightMatrix, handleClickCell);
-        // Cập nhật max trong ô input s và t
-        startVertexInput.max = `${m * n}`;
-        startVertexInput.value = "0";
-        endVertexInput.max = `${m * n}`;
-        endVertexInput.value = "0";
+        // Đặt lại s và t
+        s = 0;
+        t = 0;
+        // Đặt max và value cho start/ end vertex input
+        startVertexInput.max = `${G.getNodeCount()}`;
+        startVertexInput.value = `${s}`;
+        endVertexInput.max = `${G.getNodeCount()}`;
+        endVertexInput.value = `${t}`;
         // Bật Menu tùy chỉnh lên
         menu.classList.add("turn-on");
     } else {
@@ -119,39 +179,77 @@ randomMatrixButton.onclick = function (): void {
     }
 }
 
-const speedOptions: Array<Speed> = [
+// USE CASE 2: TÙY CHỌN TỐC ĐỘ MINH HỌA GIẢI THUẬT
+var ms: number = 2000;
+
+const speedOptions: Array<Option> = [
     { speed: 2000, title: "Rất chậm" },
     { speed: 1000, title: "Chậm" },
     { speed: 500, title: "Bình thường" },
     { speed: 100, title: "Nhanh" },
     { speed: 10, title: "Rất nhanh" }
 ]
-
-// Cập nhật thẻ select chọn tốc độ
 for (let option of speedOptions) {
     const op: HTMLOptionElement = document.createElement("option");
     op.value = `${option.speed}`;
     op.innerText = option.title;
     speedSelectTag.appendChild(op);
 }
-
 speedSelectTag.onchange = (e: Event): void => {
     const target: HTMLSelectElement = e.target as HTMLSelectElement;
-    ms = parseInt(target.value)
+    ms = parseInt(target.value);
 }
 
-// Thực thi thuật toán Moore Dijkstra
-runDijkstraButton.onclick = function (): void {
-    // typeof NaN là number nên không thể kiểm tra typeof
-    if (isNaN(s))
-        confirm("Đỉnh bắt đầu không hợp lệ");
-    else if (isNaN(t))
-        confirm("Đỉnh kết thúc không hợp lệ");
-    else
+// USE CASE 3: TÙY CHỌN GIẢI THUẬT
+var algorithmID: number = 1;
+
+const algorithmOptions: Array<Option> = [
+    { algorithmID: "1", title: "Moore Dijkstra" },
+    { algorithmID: "2", title: "Duyệt BFS" },
+    { algorithmID: "3", title: "Duyệt DFS" },
+]
+for (let option of algorithmOptions) {
+    const op: HTMLOptionElement = document.createElement("option");
+    op.value = `${option.algorithmID}`;
+    op.innerText = option.title;
+    algorithmTag.appendChild(op);
+}
+algorithmTag.onchange = (e: Event): void => {
+    const target: HTMLSelectElement = e.target as HTMLSelectElement;
+    // Gán lên global
+    algorithmID = parseInt(target.value);
+
+    if (algorithmID === 1) {
+        endVertexInputDiv.classList.remove("hide-div");
+        endVertexInputDiv.classList.add("field-group");
+    } else if (algorithmID === 2 || algorithmID === 3) {
+        endVertexInputDiv.classList.remove("field-group");
+        endVertexInputDiv.classList.add("hide-div");
+    }
+}
+
+var s: number | null = null, t: number | null = null;
+// Thực thi giải thuật được chọn
+algorithmRunButton.onclick = (e: Event): void => {
+    if (isNaN(parseInt(startVertexInput.value))) {
+        confirm("Đỉnh bắt đầu không hợp lệ!");
+        return;
+    } else s = parseInt(startVertexInput.value);
+
+    if (algorithmID === 1) {
+        if (isNaN(parseInt(endVertexInput.value))) {
+            confirm("Đỉnh kết thúc không hợp lệ!");
+            return;
+        } else t = parseInt(endVertexInput.value);
         G.Dijkstra(s, t, ms);
+    } else if (algorithmID === 2) {
+        console.log("BFS với đỉnh: ", s);
+    } else if (algorithmID === 3) {
+        console.log("DFS với đỉnh: ", s);
+    }
 }
 
-// Cập nhật trọng số
+// USE CASE 4: CẬP NHẬT TRỌNG SỐ TRÊN GIAO DIỆN
 updateWeightButton.onclick = function (e: Event): void {
     const selectedCellID: string = `${globalPoint.i}_${globalPoint.j}`
     const cell: HTMLSpanElement = document.getElementById(selectedCellID) as HTMLSpanElement;
@@ -233,3 +331,7 @@ updateWeightButton.onclick = function (e: Event): void {
     }
 }
 
+// USE CASE 5: ĐÓNG GIAO DIỆN CẬP NHẬT TRỌNG SỐ
+exitButton.onclick = (e: Event): void => {
+    pannel.classList.remove("turn-on");
+}
