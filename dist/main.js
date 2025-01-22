@@ -95,7 +95,7 @@ function handleClickCell(e) {
     weightInput.value = `${G.getWeightAtCell(globalPoint)}`;
     const n = G.getColumnCount();
     const vertex = getVertexFromPoint(globalPoint, n);
-    inforCell.innerText = `Ô ${vertex}, Tọa độ: (${globalPoint.i}, ${globalPoint.j})`;
+    inforCell.innerHTML = `Ô <b style="color:red">${vertex}</b>, Tọa độ: (${globalPoint.i}, ${globalPoint.j})`;
 }
 // Dùng trong createMatrixButton: Hàm đọc file
 function readFileAsText(file) {
@@ -318,6 +318,11 @@ updateWeightButton.onclick = function (e) {
             vertexToObstacle(u, cell);
         }
     }
+    // Cập nhật lại title cho cell
+    if (newWeight > 0)
+        cell.title = `Đỉnh ${u} có trọng số là ${newWeight}`;
+    else
+        cell.title = `Chướng ngại vật ${u} có trọng số là ${newWeight}`;
 };
 // USE CASE 5: ĐÓNG GIAO DIỆN CẬP NHẬT TRỌNG SỐ
 exitButton.onclick = (e) => {

@@ -37,16 +37,7 @@ function getPathTo(u: number, parents: Array<number>): Array<number> {
     return path.reverse();
 }
 
-async function initVisitingPath(s: number, n: number, ms: number): Promise<Array<number>> {
-    await setVisitingPath([s], n, ms);
-    return [s];
-}
-
-
 async function updateVisitingPath(u: number, parents: Array<number>, visitingPath: Array<number>, n: number, ms: number): Promise<void> {
-    if (parents[u] === -1)
-        return;
-
     if (parents[u] === visitingPath[visitingPath.length - 1]) {
         // u là đỉnh tiếp theo trong visitingPath
         visitingPath.push(u);
@@ -57,6 +48,8 @@ async function updateVisitingPath(u: number, parents: Array<number>, visitingPat
 
         // Tìm giao điểm của 2 đường đi
         let intersectIndex: number = 0;
+        // Vẫn đúng với TH đỉnh s đầu tiên,
+        // Mảng visitingPath rỗng và mảng newPath có phần tử s duy nhất
         let min_length: number = Math.min(visitingPath.length, newPath.length);
         while (visitingPath[intersectIndex] === newPath[intersectIndex] && intersectIndex < min_length)
             intersectIndex++;
@@ -292,7 +285,7 @@ export default class Graph {
             return;
         }
         // Khởi tạo 1 mảng chứa các đỉnh đang duyệt
-        let visitingPath: Array<number> = await initVisitingPath(s, n, ms);
+        let visitingPath: Array<number> = [];
 
         // Khởi tạo
         const nodeCount: number = this.getNodeCount();
@@ -327,9 +320,10 @@ export default class Graph {
             visited[u] = true;
 
             await updateVisitingPath(u, parents, visitingPath, n, ms);
-
+            // Lấy danh sách các đỉnh lân cận
+            let neighbors: Array<number> = this.getNeighborsOf(u);
             // Cập nhật đường đi đến các đỉnh lân cận
-            for (let v of vertices) {
+            for (let v of neighbors) {
                 if (this.adjacent(u, v) && distances[u] + this.A[u][v] < distances[v]) {
                     distances[v] = distances[u] + this.A[u][v];
                     parents[v] = u;

@@ -35,16 +35,8 @@ function getPathTo(u, parents) {
     } while (u !== -1);
     return path.reverse();
 }
-function initVisitingPath(s, n, ms) {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield setVisitingPath([s], n, ms);
-        return [s];
-    });
-}
 function updateVisitingPath(u, parents, visitingPath, n, ms) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (parents[u] === -1)
-            return;
         if (parents[u] === visitingPath[visitingPath.length - 1]) {
             // u là đỉnh tiếp theo trong visitingPath
             visitingPath.push(u);
@@ -55,6 +47,8 @@ function updateVisitingPath(u, parents, visitingPath, n, ms) {
             let newPath = getPathTo(u, parents);
             // Tìm giao điểm của 2 đường đi
             let intersectIndex = 0;
+            // Vẫn đúng với TH đỉnh s đầu tiên,
+            // Mảng visitingPath rỗng và mảng newPath có phần tử s duy nhất
             let min_length = Math.min(visitingPath.length, newPath.length);
             while (visitingPath[intersectIndex] === newPath[intersectIndex] && intersectIndex < min_length)
                 intersectIndex++;
@@ -264,7 +258,7 @@ export default class Graph {
                 return;
             }
             // Khởi tạo 1 mảng chứa các đỉnh đang duyệt
-            let visitingPath = yield initVisitingPath(s, n, ms);
+            let visitingPath = [];
             // Khởi tạo
             const nodeCount = this.getNodeCount();
             let distances = [], parents = [], visited = [];
@@ -296,8 +290,10 @@ export default class Graph {
                     continue;
                 visited[u] = true;
                 yield updateVisitingPath(u, parents, visitingPath, n, ms);
+                // Lấy danh sách các đỉnh lân cận
+                let neighbors = this.getNeighborsOf(u);
                 // Cập nhật đường đi đến các đỉnh lân cận
-                for (let v of vertices) {
+                for (let v of neighbors) {
                     if (this.adjacent(u, v) && distances[u] + this.A[u][v] < distances[v]) {
                         distances[v] = distances[u] + this.A[u][v];
                         parents[v] = u;
