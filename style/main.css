@@ -48,13 +48,26 @@ main {
 }
 
 #init-matrix, #pannel, #menu{
+    border-radius: 8px;
     border: 2px solid red;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
     padding: 2px;
+}
+
+#init-matrix{
+    background-color: #FFEBEE;
+    border: 2px solid #EF9A9A;
 }
 
 #pannel{
     position: relative;
+    background-color: #E8EAF6;
+    border: 2px solid #9FA8DA;
+}
+
+#menu{
+    background-color: #E0F7FA;
+    border: 2px solid #80DEEA;
 }
 
 #exit-button{
@@ -66,6 +79,21 @@ main {
 #detail{
     grid-area: detail;
     background-color: #E0F7FA;
+    text-align: center;
+}
+
+#detail-container{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    height: 80%;
+}
+
+.block{
+    width: calc(98%/3);
+    height: 100%;
+    border: 2px solid #000;
+    border-radius: 8px;
 }
 
 .hide-div {
