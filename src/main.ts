@@ -30,10 +30,8 @@ const exitButton: HTMLButtonElement = document.getElementById("exit-button") as 
 // Menu tùy chỉnh
 const menu: HTMLDivElement = document.getElementById("menu") as HTMLDivElement;
 const speedSelectTag: HTMLSelectElement = document.getElementById("speed-select") as HTMLSelectElement;
-const algorithmTag: HTMLSelectElement = document.getElementById("algorithm-select") as HTMLSelectElement;
 const startVertexInput: HTMLInputElement = document.getElementById("start-vertex-input") as HTMLInputElement;
 const endVertexInput: HTMLInputElement = document.getElementById("end-vertex-input") as HTMLInputElement;
-const endVertexInputDiv: HTMLDivElement = document.getElementById("end-vertex-input-div") as HTMLDivElement;
 const algorithmRunButton: HTMLButtonElement = document.getElementById("algorithm-run") as HTMLButtonElement;
 
 function randomFromZeroTo(number: number): number {
@@ -200,56 +198,23 @@ speedSelectTag.onchange = (e: Event): void => {
     ms = parseInt(target.value);
 }
 
-// USE CASE 3: TÙY CHỌN GIẢI THUẬT
-var algorithmID: number = 1;
-
-const algorithmOptions: Array<Option> = [
-    { algorithmID: "1", title: "Moore Dijkstra" },
-    { algorithmID: "2", title: "Duyệt BFS" },
-    { algorithmID: "3", title: "Duyệt DFS" },
-]
-for (let option of algorithmOptions) {
-    const op: HTMLOptionElement = document.createElement("option");
-    op.value = `${option.algorithmID}`;
-    op.innerText = option.title;
-    algorithmTag.appendChild(op);
-}
-algorithmTag.onchange = (e: Event): void => {
-    const target: HTMLSelectElement = e.target as HTMLSelectElement;
-    // Gán lên global
-    algorithmID = parseInt(target.value);
-
-    if (algorithmID === 1) {
-        endVertexInputDiv.classList.remove("hide-div");
-        endVertexInputDiv.classList.add("field-group");
-    } else if (algorithmID === 2 || algorithmID === 3) {
-        endVertexInputDiv.classList.remove("field-group");
-        endVertexInputDiv.classList.add("hide-div");
-    }
-}
-
 var s: number | null = null, t: number | null = null;
 // Thực thi giải thuật được chọn
-algorithmRunButton.onclick = (e: Event): void => {
+algorithmRunButton.onclick = async (e: Event): Promise<void> => {
     if (isNaN(parseInt(startVertexInput.value))) {
         confirm("Đỉnh bắt đầu không hợp lệ!");
         return;
     } else s = parseInt(startVertexInput.value);
 
-    if (algorithmID === 1) {
-        if (isNaN(parseInt(endVertexInput.value))) {
-            confirm("Đỉnh kết thúc không hợp lệ!");
-            return;
-        } else t = parseInt(endVertexInput.value);
-        G.Dijkstra(s, t, ms);
-    } else if (algorithmID === 2) {
-        console.log("BFS với đỉnh: ", s);
-    } else if (algorithmID === 3) {
-        console.log("DFS với đỉnh: ", s);
-    }
+    if (isNaN(parseInt(endVertexInput.value))) {
+        confirm("Đỉnh kết thúc không hợp lệ!");
+        return;
+    } else t = parseInt(endVertexInput.value);
+
+    await G.Dijkstra(s, t, ms);
 }
 
-// USE CASE 4: CẬP NHẬT TRỌNG SỐ TRÊN GIAO DIỆN
+// USE CASE 3: CẬP NHẬT TRỌNG SỐ TRÊN GIAO DIỆN
 updateWeightButton.onclick = function (e: Event): void {
     const selectedCellID: string = `${globalPoint.i}_${globalPoint.j}`
     const cell: HTMLSpanElement = document.getElementById(selectedCellID) as HTMLSpanElement;
@@ -336,7 +301,7 @@ updateWeightButton.onclick = function (e: Event): void {
         cell.title = `Chướng ngại vật ${u} có trọng số là ${newWeight}`;
 }
 
-// USE CASE 5: ĐÓNG GIAO DIỆN CẬP NHẬT TRỌNG SỐ
+// USE CASE 4: ĐÓNG GIAO DIỆN CẬP NHẬT TRỌNG SỐ
 exitButton.onclick = (e: Event): void => {
     pannel.classList.remove("turn-on");
 }
