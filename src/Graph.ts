@@ -1,4 +1,4 @@
-import { setMinPath, resetMinPath, setVisitingPath, resetVisitingPath } from "./draw.js";
+import { setMinPath, resetMinPath, setVisitingPath, resetVisitingPath, showUpdateVertex, hideUpdateVertex, colorizeNeighbors, deleteColorOfNeighbors } from "./draw.js";
 
 interface Point {
     i: number;
@@ -266,7 +266,9 @@ export default class Graph {
     async Dijkstra(s: number, t: number, ms: number): Promise<void> {
         const m: number = this.getRowCount();
         const n: number = this.getColumnCount();
-
+        const block_1: HTMLDivElement = document.getElementById("block-1") as HTMLDivElement;
+        const block_2: HTMLDivElement = document.getElementById("block-2") as HTMLDivElement;
+        const block_3: HTMLDivElement = document.getElementById("block-3") as HTMLDivElement;
         // Làm mới minPath trước đó
         resetMinPath(minPath.reverse(), n)
         minPath = [];
@@ -275,7 +277,6 @@ export default class Graph {
         const vertices: Array<number> = this.getVertices();
         const vertexCount: number = vertices.length;
 
-        console.log("Đường đi từ ", s, " đến ", t);
         if (s <= 0 || s > m * n || !vertices.includes(s)) {
             confirm(`Đỉnh bắt đầu là ${s}: không hợp lệ`);
             return;
@@ -304,6 +305,11 @@ export default class Graph {
         // Khác với lý thuyết đồ thị bình thường
         // Có trường hợp các đỉnh bị cô lập, không đi được đến tất cả các đỉnh còn lại được
         for (let i = 0; i < vertexCount - 1; i++) {
+            // khi đã thấy đường đi ngắn nhất thì ngưng
+            if (visited[t]) {
+                i = vertexCount;
+                continue;
+            }
             let u: number = -1;
             let min_distance: number = OO;
             // Tìm đỉnh đang có distance nhỏ nhất
@@ -319,16 +325,50 @@ export default class Graph {
 
             visited[u] = true;
 
+            const selectedVertex: HTMLHeadingElement = document.createElement("h4") as HTMLHeadingElement;
+            selectedVertex.innerText = "Đỉnh đang có đường đi ngắn nhất:";
+            const p: HTMLParagraphElement = document.createElement("span") as HTMLParagraphElement;
+            p.innerHTML = `<span style="color:red">Chọn đỉnh: ${u}</span> <br> <span style="color:blue">Đường đi ngắn nhất: ${distances[u]}</span>`;
+            block_1.appendChild(selectedVertex);
+            block_1.appendChild(p);
+
             await updateVisitingPath(u, parents, visitingPath, n, ms);
             // Lấy danh sách các đỉnh lân cận
             let neighbors: Array<number> = this.getNeighborsOf(u);
+
+            const neighborsString: Array<string> = [];
+            for (let u of neighbors)
+                neighborsString.push(`Đỉnh ${u}`);
+
+            const neighborsInfor: HTMLHeadingElement = document.createElement("h4") as HTMLHeadingElement;
+            neighborsInfor.innerHTML = `Các đỉnh lân cận của đỉnh ${u}: <br> <span style="color:red">${neighborsString.join(", ")}</span>`;
+            block_2.appendChild(neighborsInfor);
+
+            await colorizeNeighbors(neighbors, n, ms);
+
             // Cập nhật đường đi đến các đỉnh lân cận
             for (let v of neighbors) {
-                if (this.adjacent(u, v) && distances[u] + this.A[u][v] < distances[v]) {
-                    distances[v] = distances[u] + this.A[u][v];
-                    parents[v] = u;
-                }
+                let decisionString: string = `Đỉnh ${v}: `;
+                if (visited[v])
+                    decisionString = decisionString.concat(`<span style="color:red">đã duyệt rồi! BỎ QUA</span>`);
+                else
+                    if (this.adjacent(u, v) && distances[u] + this.A[u][v] < distances[v]) {
+                        distances[v] = distances[u] + this.A[u][v];
+                        parents[v] = u;
+                        decisionString = decisionString.concat(`Chưa là đường đi nhỏ nhất <br> Cập nhật: <br> <span style="color:red">Tổng trọng số đường đi: ${distances[v]}</span>  <br> <span style="color:red">Đỉnh trước đó: ${u}</span>`);
+                    } else
+                        decisionString = decisionString.concat(`Đang là đường đi ngắn nhất <br> <span style="color:blue">Không cần cập nhật</span>`);
+
+                const updateVertex: HTMLParagraphElement = document.createElement("h4") as HTMLParagraphElement;
+                updateVertex.innerHTML = decisionString;
+                block_3.appendChild(updateVertex);
+                await showUpdateVertex(v, n, ms);
+                hideUpdateVertex(v, n, ms);
+                block_3.replaceChildren();
             }
+            block_2.replaceChildren();
+            deleteColorOfNeighbors(neighbors, n, ms);
+            block_1.replaceChildren();
         }
 
         // Reset lại đường đi cuối cùng
@@ -339,7 +379,7 @@ export default class Graph {
         if (distances[t] !== OO) {
             minPath = getPathTo(t, parents);
             await setMinPath(minPath, n, ms);
-            console.log("Độ dài: ", distances[t]);
+            console.log(`Độ dài đường đi từ ${s} đến ${t} là: ${distances[t]}`);
         } else {
             confirm(`Không có đường đi từ ${s} đến ${t}`);
         }

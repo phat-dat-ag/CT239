@@ -145,3 +145,37 @@ export function resetMinPath(path: Array<number>, n: number): void {
         cell.classList.remove("minPath");
     }
 }
+
+// Tô màu cho các đỉnh lân cận
+export async function colorizeNeighbors(neighbors: Array<number>, n: number, ms: number) {
+    for (let u of neighbors) {
+        const uPoint: Point = getPointFromVertex(u, n);
+        const cell: HTMLSpanElement = document.getElementById(`${uPoint.i}_${uPoint.j}`) as HTMLSpanElement;
+        cell.classList.add("neighbors");
+    }
+    await delay(ms);
+}
+
+// Xóa màu cho các đỉnh lân cận
+export function deleteColorOfNeighbors(neighbors: Array<number>, n: number, ms: number) {
+    for (let u of neighbors) {
+        const uPoint: Point = getPointFromVertex(u, n);
+        const cell: HTMLSpanElement = document.getElementById(`${uPoint.i}_${uPoint.j}`) as HTMLSpanElement;
+        cell.classList.remove("neighbors");
+    }
+}
+
+// Tô màu cho 1 đỉnh để thao tác
+export async function showUpdateVertex(u: number, n: number, ms: number) {
+    const uPoint: Point = getPointFromVertex(u, n);
+    const cell: HTMLSpanElement = document.getElementById(`${uPoint.i}_${uPoint.j}`) as HTMLSpanElement;
+    cell.classList.add("updating-vertex");
+    await delay(ms);
+}
+
+// Xóa màu 1 đỉnh khi đã thao tác xong
+export function hideUpdateVertex(u: number, n: number, ms: number) {
+    const uPoint: Point = getPointFromVertex(u, n);
+    const cell: HTMLSpanElement = document.getElementById(`${uPoint.i}_${uPoint.j}`) as HTMLSpanElement;
+    cell.classList.remove("updating-vertex");
+}

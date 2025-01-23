@@ -180,12 +180,12 @@ createMatrixButton.onclick = async function (): Promise<void> {
 }
 
 // USE CASE 2: TÙY CHỌN TỐC ĐỘ MINH HỌA GIẢI THUẬT
-var ms: number = 2000;
+var ms: number = 3000;
 
 const speedOptions: Array<Option> = [
-    { speed: 2000, title: "Rất chậm" },
-    { speed: 1000, title: "Chậm" },
-    { speed: 500, title: "Bình thường" },
+    { speed: 3000, title: "Rất chậm" },
+    { speed: 2000, title: "Chậm" },
+    { speed: 1000, title: "Bình thường" },
     { speed: 100, title: "Nhanh" },
     { speed: 10, title: "Rất nhanh" }
 ]
