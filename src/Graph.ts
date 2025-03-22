@@ -375,13 +375,16 @@ export default class Graph {
         visitingPath.reverse();
         await resetVisitingPath(visitingPath, n, ms);
 
+        const pTag: HTMLParagraphElement = document.createElement("p") as HTMLParagraphElement;
+
         // Hiển thị đường đi ngắn nhất
         if (distances[t] !== OO) {
             minPath = getPathTo(t, parents);
             await setMinPath(minPath, n, ms);
-            console.log(`Độ dài đường đi từ ${s} đến ${t} là: ${distances[t]}`);
+            pTag.innerText = `Độ dài đường đi từ ${s} đến ${t} là: ${distances[t]}`;
         } else {
-            confirm(`Không có đường đi từ ${s} đến ${t}`);
+            pTag.innerText = `Không có đường đi từ ${s} đến ${t}`;
         }
+        block_2.replaceChildren(pTag);
     }
 }

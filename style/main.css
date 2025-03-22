@@ -22,13 +22,13 @@ header {
 }
 
 main {
-    height: 85%;
+    height: 90%;
     margin: 0 auto;
     display: grid;
     grid-template-areas: 
     "container controller"
     "detail detail";
-    grid-template-columns: 76% 24%;
+    grid-template-columns: 60% 40%;
     grid-template-rows: 80% 20%;
 }
 
@@ -45,29 +45,43 @@ main {
     padding: 8px;
     grid-area: controller;
     background-color: #FFF5E1;
+    display: grid;
+    grid-template-areas: 
+    "init-matrix view-mode"
+    "algorithm-option pannel"
+    "menu menu";
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 20% 20% 60%;
 }
 
-#init-matrix, #pannel, #menu{
+#init-matrix, #view-mode, #algorithm-option, #pannel, #menu{
+    width: 98%;
     border-radius: 8px;
-    border: 2px solid red;
     margin-bottom: 4px;
     padding: 2px;
-}
-
-#init-matrix{
-    background-color: #FFEBEE;
+    background-color: #E0F7FA;
     border: 2px solid #EF9A9A;
 }
 
+#init-matrix{
+    grid-area: init-matrix;
+}
+
+#view-mode{
+    grid-area: view-mode;
+}
+
+#algorithm-option{
+    grid-area: algorithm-option;
+}
+
 #pannel{
+    grid-area: pannel;
     position: relative;
-    background-color: #E8EAF6;
-    border: 2px solid #9FA8DA;
 }
 
 #menu{
-    background-color: #E0F7FA;
-    border: 2px solid #80DEEA;
+    grid-area: menu;
 }
 
 #exit-button{
@@ -113,6 +127,11 @@ main {
     text-align: center;
 }
 
+.cell:hover, .selected-cell{
+    background-color: yellowgreen;
+}
+
+
 .neighbors{
     border: 4px solid blue;
 }
@@ -134,12 +153,6 @@ main {
 /* Chướng ngại vật trong mê cung */
 .obstacle {
     background-color: #2F2F2F;
-}
-
-footer {
-    height: 5%;
-    background-color: #A4B494;
-    text-align: center;
 }
 
 button{

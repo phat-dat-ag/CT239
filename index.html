@@ -16,7 +16,6 @@
     <main>
         <div id="container"></div>
         <div id="controller">
-            <h2>Bảng điều khiển</h2>
             <div id="init-matrix">
                 <h3>Tạo ma trận</h3>
                 <div class="field-group">
@@ -26,6 +25,26 @@
                 <div id="file-input-area"></div>
                 <div class="field-group">
                     <button id="create-matrix-button">Sinh ma trận</button>
+                </div>
+            </div>
+            <div id="view-mode">
+                <h3>Chế độ xem</h3>
+                <div class="field-group">
+                    <label for="view-mode-select">Chế độ</label>
+                    <select name="" id="view-mode-select"></select>
+                </div>
+                <div class="field-group">
+                    <button id="select-view">OK</button>
+                </div>
+            </div>
+            <div id="algorithm-option">
+                <h3>Thuật toán</h3>
+                <div class="field-group">
+                    <label for="algorithm-select">Chọn thuật toán</label>
+                    <select name="" id="algorithm-select"></select>
+                </div>
+                <div class="field-group">
+                    <button id="select-algorithm">OK</button>
                 </div>
             </div>
             <div id="pannel" class="hide-div">
@@ -46,13 +65,15 @@
                     <label for="speed-select">Tốc độ:</label>
                     <select name="" id="speed-select"></select>
                 </div>
+                <label for="start-vertex-input">Nhập đỉnh bắt đầu: </label>
                 <div class="field-group">
-                    <label for="start-vertex-input">Start: </label>
                     <input id="start-vertex-input" type="number" placeholder="s" min="1">
+                    <button id="start">Chọn từ đồ thị</button>
                 </div>
+                <label for="end-vertex-input">Nhập đỉnh kết thúc: </label>
                 <div class="field-group">
-                    <label for="end-vertex-input">End: </label>
                     <input id="end-vertex-input" type="number" placeholder="t" min="1">
+                    <button id="end">Chọn từ đồ thị</button>
                 </div>
                 <div class="field-group">
                     <button id="algorithm-run">Thực hiện</button>
@@ -65,9 +86,6 @@
             <div id="block-3" class="block"></div>
         </div>
     </main>
-    <footer>
-        <h3>Nguyễn Phát Đạt B2203498</h3>
-    </footer>
 </body>
 <script type="module" src="./dist/main.js"></script>
 

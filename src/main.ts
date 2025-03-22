@@ -8,8 +8,9 @@ interface Point {
 
 interface Option {
     methodID?: string;
-    algorithmID?: string;
     speed?: number;
+    viewMode?: string;
+    algorithm?: string;
     title: string;
 }
 
@@ -22,6 +23,8 @@ const container: HTMLDivElement = document.getElementById("container") as HTMLDi
 const methodSelect: HTMLSelectElement = document.getElementById("method-select") as HTMLSelectElement;
 const fileInputArea: HTMLDivElement = document.getElementById("file-input-area") as HTMLDivElement;
 const createMatrixButton: HTMLButtonElement = document.getElementById("create-matrix-button") as HTMLButtonElement;
+const viewModeSelect: HTMLSelectElement = document.getElementById("view-mode-select") as HTMLSelectElement;
+const algorithmSelect: HTMLSelectElement = document.getElementById("algorithm-select") as HTMLSelectElement;
 const pannel: HTMLDivElement = document.getElementById("pannel") as HTMLDivElement;
 const inforCell: HTMLParagraphElement = document.getElementById("infor-cell") as HTMLParagraphElement;
 const weightInput: HTMLInputElement = document.getElementById("weight-input") as HTMLInputElement;
@@ -31,8 +34,16 @@ const exitButton: HTMLButtonElement = document.getElementById("exit-button") as 
 const menu: HTMLDivElement = document.getElementById("menu") as HTMLDivElement;
 const speedSelectTag: HTMLSelectElement = document.getElementById("speed-select") as HTMLSelectElement;
 const startVertexInput: HTMLInputElement = document.getElementById("start-vertex-input") as HTMLInputElement;
+const startVertexClick: HTMLButtonElement = document.getElementById("start") as HTMLButtonElement;
 const endVertexInput: HTMLInputElement = document.getElementById("end-vertex-input") as HTMLInputElement;
+const endVertexClick: HTMLButtonElement = document.getElementById("end") as HTMLButtonElement;
 const algorithmRunButton: HTMLButtonElement = document.getElementById("algorithm-run") as HTMLButtonElement;
+
+var selectedCell: HTMLSpanElement;
+const START: number = 1;
+const END: number = 2;
+const NO_CHOICE: number = -1
+var activatedOnCell: number = NO_CHOICE;
 
 function randomFromZeroTo(number: number): number {
     if (number <= 0)
@@ -88,6 +99,14 @@ methodSelect.onchange = (e: Event): void => {
     }
 }
 
+function turnOnSelectedCell() {
+    selectedCell.classList.add("selected-cell");
+}
+
+function turnOffSelectedCell() {
+    selectedCell.classList.remove("selected-cell");
+}
+
 // Dùng trong createMatrixButton: Hàm sự kiện click chọn 1 ô
 function handleClickCell(e: Event): void {
     pannel.classList.add("turn-on");
@@ -95,6 +114,15 @@ function handleClickCell(e: Event): void {
 
     const target = e.target as HTMLSpanElement;
     const cell: HTMLSpanElement = document.getElementById(target.id) as HTMLSpanElement;
+
+    // cell được chọn trước đó => xóa màu
+    if (selectedCell)
+        turnOffSelectedCell();
+
+    // Gắn cell hiện tại lên global
+    selectedCell = cell;
+    turnOnSelectedCell();
+
     // Lấy tọa độ từ id đã đặt trước đó
     let [i, j]: Array<string> = cell.id.split("_");
     globalPoint = {
@@ -106,6 +134,13 @@ function handleClickCell(e: Event): void {
     const n: number = G.getColumnCount();
     const vertex: number = getVertexFromPoint(globalPoint, n);
     inforCell.innerHTML = `Ô <b style="color:red">${vertex}</b>, Tọa độ: (${globalPoint.i}, ${globalPoint.j})`;
+
+    if (activatedOnCell === START)
+        startVertexInput.value = `${vertex}`;
+    if (activatedOnCell === END)
+        endVertexInput.value = `${vertex}`;
+    // Trả lại: chỉ cho phép chọn đỉnh bắt đầu/ kết thúc 1 lần thôi
+    activatedOnCell = NO_CHOICE;
 }
 
 // Dùng trong createMatrixButton: Hàm đọc file
@@ -201,16 +236,19 @@ speedSelectTag.onchange = (e: Event): void => {
 var s: number | null = null, t: number | null = null;
 // Thực thi giải thuật được chọn
 algorithmRunButton.onclick = async (e: Event): Promise<void> => {
-    if (isNaN(parseInt(startVertexInput.value))) {
+    s = parseInt(startVertexInput.value);
+    t = parseInt(endVertexInput.value);
+
+    if (isNaN(s) || s === 0) {
         confirm("Đỉnh bắt đầu không hợp lệ!");
         return;
-    } else s = parseInt(startVertexInput.value);
+    }
 
-    if (isNaN(parseInt(endVertexInput.value))) {
+    if (isNaN(t) || t === 0) {
         confirm("Đỉnh kết thúc không hợp lệ!");
         return;
-    } else t = parseInt(endVertexInput.value);
-
+    }
+    turnOffSelectedCell();
     await G.Dijkstra(s, t, ms);
 }
 
@@ -301,7 +339,57 @@ updateWeightButton.onclick = function (e: Event): void {
         cell.title = `Chướng ngại vật ${u} có trọng số là ${newWeight}`;
 }
 
+// Chọn đỉnh bắt đầu thay vì nhập
+startVertexClick.onclick = function () {
+    activatedOnCell = START;
+}
+
+// Chọn đỉnh kết thúc thay vì nhập
+endVertexClick.onclick = function () {
+    activatedOnCell = END;
+}
+
 // USE CASE 4: ĐÓNG GIAO DIỆN CẬP NHẬT TRỌNG SỐ
 exitButton.onclick = (e: Event): void => {
-    pannel.classList.remove("turn-on");
+    pannel.classList.remove("turn-on")
+    turnOffSelectedCell();
+}
+
+// USE CASE 5: CHỌN CHẾ ĐỘ XEM
+const viewModeOptions: Array<Option> = [
+    { viewMode: "weight", title: "Ma trận với trọng số" },
+    { viewMode: "node", title: "Ma trận số thứ tự đỉnh" },
+    { viewMode: "graph", title: "Đồ thị minh họa" }
+];
+
+for (let option of viewModeOptions) {
+    const op: HTMLOptionElement = document.createElement("option") as HTMLOptionElement;
+    op.value = `${option.viewMode}`;
+    op.innerText = `${option.title}`;
+    viewModeSelect.appendChild(op);
+}
+
+viewModeSelect.onchange = (e) => {
+    const target: HTMLSelectElement = e.target as HTMLSelectElement;
+    confirm(`${target.value}`)
+}
+
+// USE CASE 6: CHỌN CHỨC NĂNG/ THUẬT TOÁN
+const algorithmOptions: Array<Option> = [
+    { algorithm: "Moore-Dijkstra", title: "Moore Dijkstra" },
+    { algorithm: "Spanning-tree", title: "Cây phủ tối thiểu" },
+    { algorithm: "DFS", title: "Cây duyệt theo chiều sâu" },
+    { algorithm: "BFS", title: "Cây duyệt theo chiều rộng" },
+];
+
+for (let option of algorithmOptions) {
+    const op: HTMLOptionElement = document.createElement("option") as HTMLOptionElement;
+    op.value = `${option.algorithm}`;
+    op.innerText = `${option.title}`;
+    algorithmSelect.appendChild(op);
+}
+
+algorithmSelect.onchange = (e) => {
+    const target: HTMLSelectElement = e.target as HTMLSelectElement;
+    confirm(`${target.value}`);
 }
