@@ -51,7 +51,7 @@ main {
     "algorithm-option pannel"
     "menu menu";
     grid-template-columns: 50% 50%;
-    grid-template-rows: 20% 20% 60%;
+    grid-template-rows: 26% 20% 54%;
 }
 
 #init-matrix, #view-mode, #algorithm-option, #pannel, #menu{

@@ -1,5 +1,7 @@
 import Graph from "./Graph.js";
 import { drawGraph } from "./draw.js";
+import { drawVisGraph } from "./visGraph.js";
+import Dijkstra from "./algoDijkstra.js";
 
 interface Point {
     i: number;
@@ -23,7 +25,10 @@ const container: HTMLDivElement = document.getElementById("container") as HTMLDi
 const methodSelect: HTMLSelectElement = document.getElementById("method-select") as HTMLSelectElement;
 const fileInputArea: HTMLDivElement = document.getElementById("file-input-area") as HTMLDivElement;
 const createMatrixButton: HTMLButtonElement = document.getElementById("create-matrix-button") as HTMLButtonElement;
+const viewModeArea: HTMLDivElement = document.getElementById("view-mode") as HTMLDivElement;
+const algorithmArea: HTMLDivElement = document.getElementById("algorithm-option") as HTMLDivElement;
 const viewModeSelect: HTMLSelectElement = document.getElementById("view-mode-select") as HTMLSelectElement;
+const selectViewModeButton: HTMLButtonElement = document.getElementById("select-view") as HTMLButtonElement;
 const algorithmSelect: HTMLSelectElement = document.getElementById("algorithm-select") as HTMLSelectElement;
 const pannel: HTMLDivElement = document.getElementById("pannel") as HTMLDivElement;
 const inforCell: HTMLParagraphElement = document.getElementById("infor-cell") as HTMLParagraphElement;
@@ -44,6 +49,27 @@ const START: number = 1;
 const END: number = 2;
 const NO_CHOICE: number = -1
 var activatedOnCell: number = NO_CHOICE;
+
+const WEIGHT: number = 1;
+const VERTEX: number = 2;
+const GRAPH: number = 3;
+var selectedViewMode: number = WEIGHT;
+
+// Hiển thị thẻ div đã bị ẩn lên
+function turnOnDiv(divs: Array<HTMLDivElement>) {
+    for (let div of divs) {
+        div.classList.add("turn-on");
+        div.classList.remove("hide-div");
+    }
+}
+
+// Ẩn thẻ div đang được hiển thị
+function turnOffDiv(divs: Array<HTMLDivElement>) {
+    for (let div of divs) {
+        div.classList.remove("turn-on");
+        div.classList.add("hide-div");
+    }
+}
 
 function randomFromZeroTo(number: number): number {
     if (number <= 0)
@@ -109,7 +135,8 @@ function turnOffSelectedCell() {
 
 // Dùng trong createMatrixButton: Hàm sự kiện click chọn 1 ô
 function handleClickCell(e: Event): void {
-    pannel.classList.add("turn-on");
+    // Bật pannel lên
+    turnOnDiv([pannel]);
     inforCell.replaceChildren();
 
     const target = e.target as HTMLSpanElement;
@@ -157,7 +184,7 @@ function readFileAsText(file: File): Promise<string> {
 // Sinh ra ma trận
 createMatrixButton.onclick = async function (): Promise<void> {
     // Tắt pannel mỗi khi random lại
-    pannel.classList.remove("turn-on");
+    turnOffDiv([pannel]);
     let matrix: Array<Array<number>> = [];
 
     if (file) {
@@ -196,7 +223,7 @@ createMatrixButton.onclick = async function (): Promise<void> {
         const m: number = G.getRowCount();
         const n: number = G.getColumnCount();
         const weightMatrix: Array<Array<number>> = G.getWeightMatrix();
-        drawGraph(container, m, n, weightMatrix, handleClickCell);
+        drawGraph(WEIGHT, container, m, n, weightMatrix, handleClickCell);
         // Đặt lại s và t
         s = 0;
         t = 0;
@@ -206,7 +233,9 @@ createMatrixButton.onclick = async function (): Promise<void> {
         endVertexInput.max = `${G.getNodeCount()}`;
         endVertexInput.value = `${t}`;
         // Bật Menu tùy chỉnh lên
-        menu.classList.add("turn-on");
+        // Bật chức năng chọn chế độ xem lên
+        // Bật chức năng chọn thuật toán lên
+        turnOnDiv([menu, viewModeArea, algorithmArea]);
     } else {
         confirm("Ma trận không hợp lệ");
     }
@@ -249,7 +278,7 @@ algorithmRunButton.onclick = async (e: Event): Promise<void> => {
         return;
     }
     turnOffSelectedCell();
-    await G.Dijkstra(s, t, ms);
+    await Dijkstra(G, s, t, ms);
 }
 
 // USE CASE 3: CẬP NHẬT TRỌNG SỐ TRÊN GIAO DIỆN
@@ -351,14 +380,14 @@ endVertexClick.onclick = function () {
 
 // USE CASE 4: ĐÓNG GIAO DIỆN CẬP NHẬT TRỌNG SỐ
 exitButton.onclick = (e: Event): void => {
-    pannel.classList.remove("turn-on")
+    turnOffDiv([pannel]);
     turnOffSelectedCell();
 }
 
 // USE CASE 5: CHỌN CHẾ ĐỘ XEM
 const viewModeOptions: Array<Option> = [
     { viewMode: "weight", title: "Ma trận với trọng số" },
-    { viewMode: "node", title: "Ma trận số thứ tự đỉnh" },
+    { viewMode: "vertex", title: "Ma trận số thứ tự đỉnh" },
     { viewMode: "graph", title: "Đồ thị minh họa" }
 ];
 
@@ -371,7 +400,36 @@ for (let option of viewModeOptions) {
 
 viewModeSelect.onchange = (e) => {
     const target: HTMLSelectElement = e.target as HTMLSelectElement;
-    confirm(`${target.value}`)
+    if (target.value === "weight")
+        selectedViewMode = WEIGHT;
+    else if (target.value === "graph")
+        selectedViewMode = GRAPH;
+    else if (target.value === "vertex")
+        selectedViewMode = VERTEX;
+    else
+        confirm("Lỗi chức năng chọn chế độ xem rồi!");
+}
+
+selectViewModeButton.onclick = () => {
+    const m: number = G.getRowCount();
+    const n: number = G.getColumnCount();
+    switch (selectedViewMode) {
+        case WEIGHT:
+            turnOnDiv([menu, algorithmArea]);
+            drawGraph(WEIGHT, container, m, n, G.getWeightMatrix(), handleClickCell);
+            break;
+        case VERTEX:
+            turnOnDiv([menu, algorithmArea]);
+            drawGraph(VERTEX, container, m, n, G.getWeightMatrix(), handleClickCell);
+            break;
+        case GRAPH:
+            turnOffDiv([menu, pannel, algorithmArea]);
+            drawVisGraph(container, G.getVertices(), G.getVertexMatrix());
+            break;
+        default:
+            confirm("Lỗi chức năng hiển thị chế độ xem!")
+            break;
+    }
 }
 
 // USE CASE 6: CHỌN CHỨC NĂNG/ THUẬT TOÁN

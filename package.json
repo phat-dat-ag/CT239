@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "cytoscape": "^3.31.1",
+    "vis-data": "^7.1.9",
+    "vis-network": "^9.1.9"
+  },
+  "devDependencies": {
+    "@types/cytoscape": "^3.21.9",
+    "@types/vis": "^4.21.27"
+  }
+}

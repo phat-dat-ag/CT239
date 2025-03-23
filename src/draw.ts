@@ -1,3 +1,6 @@
+const WEIGHT: number = 1;
+const VERTEX: number = 2;
+
 interface Size {
     height: number;
     width: number;
@@ -6,6 +9,7 @@ interface Size {
 interface Infor {
     vertex: number;
     weight: number;
+    mode: number;
 }
 
 interface Point {
@@ -40,7 +44,14 @@ function drawCell(idCell: string, cellSize: Size, inforCell: Infor): HTMLSpanEle
     }
     else {
         // Không là chướng ngại vật: là đỉnh
-        cell.innerText = `${inforCell.weight}`;
+        let data: number = 99;
+        if (inforCell.mode === VERTEX)
+            data = inforCell.vertex;
+        else if (inforCell.mode === WEIGHT)
+            data = inforCell.weight;
+        else
+            confirm("Lỗi xảy ra khi tạo một ô!");
+        cell.innerText = `${data}`;
         cell.title = `Đỉnh ${inforCell.vertex} có trọng số là ${inforCell.weight}`;
     }
     Object.assign(cell.style, {
@@ -54,7 +65,7 @@ function drawCell(idCell: string, cellSize: Size, inforCell: Infor): HTMLSpanEle
 }
 
 // Vẽ toàn bộ ma trận
-export function drawGraph(container: HTMLDivElement, m: number, n: number, weightMatrix: Array<Array<number>>, handleClickCell: HandleClickCell): void {
+export function drawGraph(viewMode: number, container: HTMLDivElement, m: number, n: number, weightMatrix: Array<Array<number>>, handleClickCell: HandleClickCell): void {
     container.replaceChildren();
 
     const containerSize: Size = {
@@ -80,7 +91,8 @@ export function drawGraph(container: HTMLDivElement, m: number, n: number, weigh
         for (let j = 0; j < n; j++) {
             const inforCell: Infor = {
                 vertex: i * n + (j + 1),
-                weight: weightMatrix[i][j]
+                weight: weightMatrix[i][j],
+                mode: viewMode,
             }
             // Để id là duy nhất
             const cell: HTMLSpanElement = drawCell(`${i}_${j}`, cellSize, inforCell);
