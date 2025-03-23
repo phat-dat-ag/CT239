@@ -48,3 +48,33 @@ export function drawVisGraph(container: HTMLElement, vertices: Array<number>, ve
     container.replaceChildren();
     new Network(container, { nodes, edges }, options);
 }
+
+export function drawDirectedTree(container: HTMLDivElement, parent: Array<number>) {
+    let nodesList: DataSet<CustomNode> = [];
+    for (let vertex in parent) {
+        if (parent[vertex] === 0)
+            continue;
+        else
+            nodesList.push({
+                id: parseInt(vertex),
+                label: vertex.toString(),
+                color: { background: "lightblue", border: "red" }
+            })
+    }
+    const nodes = new DataSet<CustomNode>(nodesList);
+
+    let edgeList: Array<DataSet> = [];
+    for (let u in parent)
+        if (parent[u] === -1 || parent[u] === 0)
+            continue;
+        else
+            edgeList.push({
+                from: parent[u],
+                to: parseInt(u),
+                arrows: "to"
+            })
+    const edges = new DataSet(edgeList);
+
+    container.replaceChildren();
+    new Network(container, { nodes, edges }, options);
+}

@@ -2,6 +2,8 @@ import Graph from "./Graph.js";
 import { drawGraph } from "./draw.js";
 import { drawVisGraph } from "./visGraph.js";
 import Dijkstra from "./algoDijkstra.js";
+import Tree_BFS from "./TreeBFS.js";
+import Tree_DFS from "./TreeDFS.js";
 
 interface Point {
     i: number;
@@ -12,7 +14,7 @@ interface Option {
     methodID?: string;
     speed?: number;
     viewMode?: string;
-    algorithm?: string;
+    algorithmID?: number;
     title: string;
 }
 
@@ -30,6 +32,7 @@ const algorithmArea: HTMLDivElement = document.getElementById("algorithm-option"
 const viewModeSelect: HTMLSelectElement = document.getElementById("view-mode-select") as HTMLSelectElement;
 const selectViewModeButton: HTMLButtonElement = document.getElementById("select-view") as HTMLButtonElement;
 const algorithmSelect: HTMLSelectElement = document.getElementById("algorithm-select") as HTMLSelectElement;
+const selectAlgorithmButton: HTMLButtonElement = document.getElementById("select-algorithm") as HTMLButtonElement;
 const pannel: HTMLDivElement = document.getElementById("pannel") as HTMLDivElement;
 const inforCell: HTMLParagraphElement = document.getElementById("infor-cell") as HTMLParagraphElement;
 const weightInput: HTMLInputElement = document.getElementById("weight-input") as HTMLInputElement;
@@ -44,6 +47,11 @@ const endVertexInput: HTMLInputElement = document.getElementById("end-vertex-inp
 const endVertexClick: HTMLButtonElement = document.getElementById("end") as HTMLButtonElement;
 const algorithmRunButton: HTMLButtonElement = document.getElementById("algorithm-run") as HTMLButtonElement;
 
+// Hai trường dữ liệu cần ẩn/ tắt với từng loại thuật toán
+// Riêng nhập đỉnh bắt đầu là luôn cần có
+const speedInputDiv: HTMLDivElement = document.getElementById("speed-field-group") as HTMLDivElement;
+const endInputDiv: HTMLDivElement = document.getElementById("end-vertex-field-group") as HTMLDivElement;
+
 var selectedCell: HTMLSpanElement;
 const START: number = 1;
 const END: number = 2;
@@ -54,6 +62,13 @@ const WEIGHT: number = 1;
 const VERTEX: number = 2;
 const GRAPH: number = 3;
 var selectedViewMode: number = WEIGHT;
+
+const DIJKSTRA: number = 1;
+const SPANNING: number = 2;
+const TSP: number = 3;
+const DFS: number = 4;
+const BFS: number = 5;
+var selectedAlgorithm: number = 1;
 
 // Hiển thị thẻ div đã bị ẩn lên
 function turnOnDiv(divs: Array<HTMLDivElement>) {
@@ -266,19 +281,30 @@ var s: number | null = null, t: number | null = null;
 // Thực thi giải thuật được chọn
 algorithmRunButton.onclick = async (e: Event): Promise<void> => {
     s = parseInt(startVertexInput.value);
-    t = parseInt(endVertexInput.value);
-
     if (isNaN(s) || s === 0) {
         confirm("Đỉnh bắt đầu không hợp lệ!");
         return;
     }
-
-    if (isNaN(t) || t === 0) {
-        confirm("Đỉnh kết thúc không hợp lệ!");
-        return;
+    switch (selectedAlgorithm) {
+        case DIJKSTRA:
+            t = parseInt(endVertexInput.value);
+            if (isNaN(t) || t === 0) {
+                confirm("Đỉnh kết thúc không hợp lệ!");
+                return;
+            }
+            turnOffSelectedCell();
+            await Dijkstra(G, s, t, ms);
+            break;
+        case DFS:
+            Tree_DFS(container, G, s);
+            break;
+        case BFS:
+            Tree_BFS(container, G, s);
+            break;
+        default:
+            confirm("Chưa hỗ trợ các chức năng còn lại");
     }
-    turnOffSelectedCell();
-    await Dijkstra(G, s, t, ms);
+
 }
 
 // USE CASE 3: CẬP NHẬT TRỌNG SỐ TRÊN GIAO DIỆN
@@ -434,20 +460,42 @@ selectViewModeButton.onclick = () => {
 
 // USE CASE 6: CHỌN CHỨC NĂNG/ THUẬT TOÁN
 const algorithmOptions: Array<Option> = [
-    { algorithm: "Moore-Dijkstra", title: "Moore Dijkstra" },
-    { algorithm: "Spanning-tree", title: "Cây phủ tối thiểu" },
-    { algorithm: "DFS", title: "Cây duyệt theo chiều sâu" },
-    { algorithm: "BFS", title: "Cây duyệt theo chiều rộng" },
+    { algorithmID: 1, title: "Moore Dijkstra" },
+    { algorithmID: 2, title: "Cây phủ tối thiểu" },
+    { algorithmID: 3, title: "Bài toán TSP" },
+    { algorithmID: 4, title: "Cây duyệt DFS" },
+    { algorithmID: 5, title: "Cây duyệt BFS" },
 ];
 
 for (let option of algorithmOptions) {
     const op: HTMLOptionElement = document.createElement("option") as HTMLOptionElement;
-    op.value = `${option.algorithm}`;
+    op.value = `${option.algorithmID}`;
     op.innerText = `${option.title}`;
     algorithmSelect.appendChild(op);
 }
 
 algorithmSelect.onchange = (e) => {
     const target: HTMLSelectElement = e.target as HTMLSelectElement;
-    confirm(`${target.value}`);
+    selectedAlgorithm = parseInt(target.value);
+}
+
+function turnOffInputDiv() {
+    speedInputDiv.classList.remove("field-group");
+    speedInputDiv.classList.add("hide-div");
+    endInputDiv.classList.remove("field-group");
+    endInputDiv.classList.add("hide-div");
+}
+
+function turnOnInputDiv() {
+    speedInputDiv.classList.add("field-group");
+    speedInputDiv.classList.remove("hide-div");
+    endInputDiv.classList.add("field-group");
+    endInputDiv.classList.remove("hide-div");
+}
+
+selectAlgorithmButton.onclick = () => {
+    if (selectedAlgorithm === DIJKSTRA)
+        turnOnInputDiv();
+    else
+        turnOffInputDiv();
 }
