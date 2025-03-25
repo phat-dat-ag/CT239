@@ -2,9 +2,8 @@ import Graph from "./Graph.js";
 import { drawGraph } from "./draw.js";
 import { drawVisGraph } from "./visGraph.js";
 import Dijkstra from "./algoDijkstra.js";
-import Tree_BFS from "./TreeBFS.js";
-import Tree_DFS from "./TreeDFS.js";
-import { ChuLiu } from "./ChuLiuEdmonds.js";
+import { Tree_BFS, Tree_DFS } from "./algoTreeTraverlling.js";
+import { ChuLiu } from "./algoChuLiuEdmonds.js";
 
 interface Point {
     i: number;

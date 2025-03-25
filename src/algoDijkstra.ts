@@ -99,11 +99,6 @@ export default async function Dijkstra(G: GraphType, s: number, t: number, ms: n
     // Khác với lý thuyết đồ thị bình thường
     // Có trường hợp các đỉnh bị cô lập, không đi được đến tất cả các đỉnh còn lại được
     for (let i = 0; i < vertexCount - 1; i++) {
-        // khi đã thấy đường đi ngắn nhất thì ngưng
-        if (visited[t]) {
-            i = vertexCount;
-            continue;
-        }
         let u: number = -1;
         let min_distance: number = OO;
         // Tìm đỉnh đang có distance nhỏ nhất
