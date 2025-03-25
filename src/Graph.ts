@@ -3,6 +3,14 @@ interface Point {
     j: number;
 }
 
+// Hỗ trợ cho Graph_EdgeList
+interface Edge {
+    u: number;
+    v: number;
+    w: number;
+    link: number;
+}
+
 // Do phạm vi -99 đến 99 nên gắn 500 để là giá trị đặc biệt
 const NO_EDGE: number = 500;
 const directions: Array<Point> = [
@@ -20,6 +28,32 @@ function getPointFromVertex(u: number, n: number): Point {
     return {
         i: Math.floor((u - 1) / n),
         j: (u - 1) % n
+    }
+}
+
+// Lưu trữ theo kiểu danh sách cung
+class Graph_EdgeList {
+    public edges: Array<Edge>;
+    public n: number;
+    public m: number;
+
+    // Là hàm init_graph luôn
+    constructor(n: number) {
+        this.n = n;
+        this.m = 0;
+        this.edges = [];
+    }
+
+    addEdge(u: number, v: number, w: number, link: number) {
+        this.edges.push({ u, v, w, link });
+        this.m++;
+    }
+
+    printGraph() {
+        this.edges.forEach(e => {
+            console.log(`(${e.u}, ${e.v}): ${e.w}, ${e.link}`);
+        });
+        console.log();
     }
 }
 
@@ -99,6 +133,15 @@ export default class Graph {
                 }
             }
         return vertices;
+    }
+    // Tạo đồ thị danh sách các cung từ ma trận đỉnh đỉnh
+    convertEdgeList(): Graph_EdgeList {
+        let graphEdgeList = new Graph_EdgeList(this.nodeCount);
+        for (let u = 1; u <= this.nodeCount; u++)
+            for (let v = 1; v <= this.nodeCount; v++)
+                if (this.A[u][v] !== NO_EDGE)
+                    graphEdgeList.addEdge(u, v, this.A[u][v], -1);
+        return graphEdgeList;
     }
     // Trả về neighbors trong đồ thị
     // Một đỉnh có tối đa 4 neighbors

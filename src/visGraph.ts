@@ -49,28 +49,31 @@ export function drawVisGraph(container: HTMLElement, vertices: Array<number>, ve
     new Network(container, { nodes, edges }, options);
 }
 
-export function drawDirectedTree(container: HTMLDivElement, parent: Array<number>) {
+interface directedTree {
+    u: number;
+    p: number;
+    w: number | string;
+}
+
+// Chỉ áp dụng cho đơn đồ thị có hướng
+export function drawDirectedTree(container: HTMLDivElement, tree: Array<directedTree>) {
     let nodesList: DataSet<CustomNode> = [];
-    for (let vertex in parent) {
-        if (parent[vertex] === 0)
-            continue;
-        else
-            nodesList.push({
-                id: parseInt(vertex),
-                label: vertex.toString(),
-                color: { background: "lightblue", border: "red" }
-            })
+    for (let edge of tree) {
+        nodesList.push({
+            id: edge.u,
+            label: edge.u.toString(),
+            color: { background: "lightblue", border: "red" }
+        })
     }
     const nodes = new DataSet<CustomNode>(nodesList);
 
     let edgeList: Array<DataSet> = [];
-    for (let u in parent)
-        if (parent[u] === -1 || parent[u] === 0)
-            continue;
-        else
+    for (let edge of tree)
+        if (edge.p !== -1)
             edgeList.push({
-                from: parent[u],
-                to: parseInt(u),
+                from: edge.p,
+                to: edge.u,
+                label: edge.w.toString(),
                 arrows: "to"
             })
     const edges = new DataSet(edgeList);

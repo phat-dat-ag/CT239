@@ -37,6 +37,13 @@ function DFS(G: GraphType, s: number, mark: Array<boolean>, parent: Array<number
     }
     return arr;
 }
+
+interface directedTree {
+    u: number;
+    p: number;
+    w: number | string;
+}
+
 export default function Tree_DFS(container: HTMLDivElement, G: GraphType, s: number) {
     const nodeCount = G.getNodeCount();
     let parent = [], mark = [];
@@ -46,5 +53,11 @@ export default function Tree_DFS(container: HTMLDivElement, G: GraphType, s: num
     }
 
     DFS(G, s, mark, parent);
-    drawDirectedTree(container, parent);
+
+    let tree: Array<directedTree> = [];
+    for (let u = 1; u <= nodeCount; u++)
+        if (parent[u] !== 0)
+            tree.push({ u, p: parent[u], w: "" });
+
+    drawDirectedTree(container, tree);
 }

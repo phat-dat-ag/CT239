@@ -4,6 +4,7 @@ import { drawVisGraph } from "./visGraph.js";
 import Dijkstra from "./algoDijkstra.js";
 import Tree_BFS from "./TreeBFS.js";
 import Tree_DFS from "./TreeDFS.js";
+import { ChuLiu } from "./ChuLiuEdmonds.js";
 
 interface Point {
     i: number;
@@ -294,6 +295,9 @@ algorithmRunButton.onclick = async (e: Event): Promise<void> => {
             }
             turnOffSelectedCell();
             await Dijkstra(G, s, t, ms);
+            break;
+        case SPANNING:
+            ChuLiu(container, G, s);
             break;
         case DFS:
             Tree_DFS(container, G, s);
