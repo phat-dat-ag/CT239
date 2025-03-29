@@ -4,6 +4,7 @@ import { drawVisGraph } from "./visGraph.js";
 import Dijkstra from "./algoDijkstra.js";
 import { Tree_BFS, Tree_DFS } from "./algoTreeTraverlling.js";
 import { ChuLiu } from "./algoChuLiuEdmonds.js";
+import Tree_TSP from "./algoTSP.js";
 
 interface Point {
     i: number;
@@ -297,6 +298,9 @@ algorithmRunButton.onclick = async (e: Event): Promise<void> => {
             break;
         case SPANNING:
             ChuLiu(container, G, s);
+            break;
+        case TSP:
+            Tree_TSP(container, G, s);
             break;
         case DFS:
             Tree_DFS(container, G, s);
