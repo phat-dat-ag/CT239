@@ -1,7 +1,6 @@
 // @ts-ignore
 import { DataSet, Network, Node, Options } from "https://cdn.jsdelivr.net/npm/vis-network@9.1.2/standalone/esm/vis-network.min.js";
 
-
 // Định nghĩa kiểu dữ liệu cho Node
 interface CustomNode extends Node {
     color?: { background: string; border?: string };

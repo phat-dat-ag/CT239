@@ -1,14 +1,9 @@
 import { drawDirectedTree } from "./visGraph.js";
 import Tree_Recursion from "./Recursion.js";
+import Graph_EdgeList from "./Graph_EdgeList.js";
+import Tree from "./Graph_Tree.js";
 
 const OO = 999999;
-
-interface Edge {
-    u: number;
-    v: number;
-    w: number;
-    link: number;
-}
 
 interface directedTree {
     u: number;
@@ -22,57 +17,6 @@ interface GraphType {
     getNodeCount(): number;
     adjacent(u: number, v: number): boolean;
     convertEdgeList(): Graph_EdgeList
-}
-
-// Cấu trúc đồ thị danh sách cung
-class Graph_EdgeList {
-    edges: Array<Edge>;
-    n: number;
-    m: number;
-
-    // Là hàm init_graph luôn
-    constructor(n: number) {
-        this.n = n;
-        this.edges = [];
-        this.m = 0;
-    }
-
-    addEdge(u: number, v: number, w: number, link: number) {
-        this.edges.push({ u, v, w, link });
-        this.m++;
-    }
-
-    printGraph() {
-        this.edges.forEach(e => {
-            console.log(`(${e.u}, ${e.v}): ${e.w}, ${e.link}`);
-        });
-        console.log();
-    }
-}
-
-// Cấu trúc Cây (đồ thị xấp xỉ)
-class Tree {
-    n: number;
-    parent: Array<number> = [];
-    weight: Array<number> = [];
-    link: Array<number> = [];
-
-    // Cũng chính là hàm init_tree
-    constructor(n: number) {
-        this.n = n;
-        for (let i = 1; i <= this.n; i++) {
-            this.parent[i] = -1;
-            this.weight[i] = OO;
-            this.link[i] = -1;
-        }
-    }
-
-    printTree() {
-        for (let v = 1; v <= this.n; v++) {
-            console.log(`(${this.parent[v]}, ${v}): ${this.weight[v]}, ${this.link[v]}`);
-        }
-        console.log();
-    }
 }
 
 let id: Array<number> = [];

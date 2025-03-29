@@ -13,7 +13,6 @@ interface GraphType {
     getWeightOfEdge(u: number, v: number): number,
 }
 
-
 function getPathTo(u: number, parents: Array<number>): Array<number> {
     const path: Array<number> = [];
     do {
@@ -54,8 +53,6 @@ async function updateVisitingPath(u: number, parents: Array<number>, visitingPat
         visitingPath.splice(intersectIndex, visitingPath.length - intersectIndex, ...right);
     }
 }
-
-
 
 export default async function Dijkstra(G: GraphType, s: number, t: number, ms: number): Promise<void> {
     const m: number = G.getRowCount();

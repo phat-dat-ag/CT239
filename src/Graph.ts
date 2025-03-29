@@ -1,14 +1,7 @@
+import Graph_EdgeList from "./Graph_EdgeList.js";
 interface Point {
     i: number;
     j: number;
-}
-
-// Hỗ trợ cho Graph_EdgeList
-interface Edge {
-    u: number;
-    v: number;
-    w: number;
-    link: number;
 }
 
 // Do phạm vi -99 đến 99 nên gắn 500 để là giá trị đặc biệt
@@ -28,32 +21,6 @@ function getPointFromVertex(u: number, n: number): Point {
     return {
         i: Math.floor((u - 1) / n),
         j: (u - 1) % n
-    }
-}
-
-// Lưu trữ theo kiểu danh sách cung
-class Graph_EdgeList {
-    public edges: Array<Edge>;
-    public n: number;
-    public m: number;
-
-    // Là hàm init_graph luôn
-    constructor(n: number) {
-        this.n = n;
-        this.m = 0;
-        this.edges = [];
-    }
-
-    addEdge(u: number, v: number, w: number, link: number) {
-        this.edges.push({ u, v, w, link });
-        this.m++;
-    }
-
-    printGraph() {
-        this.edges.forEach(e => {
-            console.log(`(${e.u}, ${e.v}): ${e.w}, ${e.link}`);
-        });
-        console.log();
     }
 }
 
