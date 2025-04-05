@@ -294,7 +294,7 @@ algorithmRunButton.onclick = async (e: Event): Promise<void> => {
                 return;
             }
             turnOffSelectedCell();
-            await Dijkstra(G, s, t, ms);
+            await Dijkstra(container, G, s, t, ms);
             break;
         case SPANNING:
             ChuLiu(container, G, s);

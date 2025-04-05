@@ -1,4 +1,5 @@
 import { setMinPath, resetMinPath, setVisitingPath, resetVisitingPath, showUpdateVertex, hideUpdateVertex, colorizeNeighbors, deleteColorOfNeighbors } from "./draw.js";
+import { drawDirectedTree } from "./visGraph.js";
 
 const OO: number = 999999999;
 var minPath: Array<number> = [];
@@ -11,6 +12,12 @@ interface GraphType {
     getNeighborsOf(u: number): Array<number>,
     adjacent(u: number, v: number): boolean,
     getWeightOfEdge(u: number, v: number): number,
+}
+
+interface DirectedTree {
+    u: number;
+    p: number;
+    w: number | string;
 }
 
 function getPathTo(u: number, parents: Array<number>): Array<number> {
@@ -54,7 +61,7 @@ async function updateVisitingPath(u: number, parents: Array<number>, visitingPat
     }
 }
 
-export default async function Dijkstra(G: GraphType, s: number, t: number, ms: number): Promise<void> {
+export default async function Dijkstra(container: HTMLDivElement, G: GraphType, s: number, t: number, ms: number): Promise<void> {
     const m: number = G.getRowCount();
     const n: number = G.getColumnCount();
     const block_1: HTMLDivElement = document.getElementById("block-1") as HTMLDivElement;
@@ -172,4 +179,19 @@ export default async function Dijkstra(G: GraphType, s: number, t: number, ms: n
         pTag.innerText = `Không có đường đi từ ${s} đến ${t}`;
     }
     block_2.replaceChildren(pTag);
+
+    let directedTree: Array<DirectedTree> = [];
+    for (let u = 1; u <= nodeCount; u++)
+        if (parents[u] !== 0)
+            if (parents[u] === -1)
+                directedTree.push({ u: u, p: parents[u], w: "" });
+            else
+                directedTree.push({ u: u, p: parents[u], w: G.getWeightOfEdge(parents[u], u) });
+
+    const viewTreeButton: HTMLButtonElement = document.createElement("button") as HTMLButtonElement;
+    viewTreeButton.innerText = "Xem cây đường đi ngắn nhất";
+    viewTreeButton.addEventListener("click", function () {
+        drawDirectedTree(container, directedTree);
+    })
+    block_2.appendChild(viewTreeButton);
 }

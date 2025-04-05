@@ -16,7 +16,7 @@ interface EdgeList {
     w: number;
 }
 
-interface directedTree {
+interface DirectedTree {
     u: number;
     p: number;
     w: number | string;
@@ -163,7 +163,7 @@ export default function Tree_TSP(container: HTMLDivElement, graph: GraphType, sV
     TSP(sVertex, index);
 
     // Tạo cây
-    let tree: Array<directedTree> = [];
+    let tree: Array<DirectedTree> = [];
     for (let e of selectedEdges)
         tree.push({ u: e.v, p: e.u, w: e.w });
 

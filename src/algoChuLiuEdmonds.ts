@@ -5,7 +5,7 @@ import Tree from "./Graph_Tree.js";
 
 const OO = 999999;
 
-interface directedTree {
+interface DirectedTree {
     u: number;
     p: number;
     w: number;
@@ -135,7 +135,7 @@ export function ChuLiu(container: HTMLDivElement, graph: GraphType, s: number): 
     let isValidVertex: Array<boolean> = Tree_Recursion(graph, s);
     // console.log(isValidVertex);
 
-    let directedTree: Array<directedTree> = [];
+    let directedTree: Array<DirectedTree> = [];
     // Loại bỏ các đỉnh là chướng ngại vật
     // Loại bỏ luôn các đỉnh mà s không thể đi tới (khác bộ phận liên thông)
     for (let u = 1; u <= H[0].n; u++)

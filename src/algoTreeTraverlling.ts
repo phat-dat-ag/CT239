@@ -6,7 +6,7 @@ interface GraphType {
     getNodeCount(): number;
 }
 
-interface directedTree {
+interface DirectedTree {
     u: number;
     p: number;
     w: number | string;
@@ -15,7 +15,7 @@ interface directedTree {
 // Đều là biến toàn cục để 2 hàm thay nhau sử dụng
 let nodeCount: number;
 let parent: Array<number> = [], mark: Array<boolean> = [];
-let tree: Array<directedTree> = [];
+let tree: Array<DirectedTree> = [];
 
 function init(G: GraphType) {
     tree = [];
@@ -33,8 +33,6 @@ function createTree() {
 }
 
 function BFS(G: GraphType, s: number, mark: Array<boolean>, parent: Array<number>) {
-    var arr = [];
-
     // Khởi tạo hàng đợi
     let Q = new Queue();
     Q.make_null_queue();
@@ -53,7 +51,6 @@ function BFS(G: GraphType, s: number, mark: Array<boolean>, parent: Array<number
             // Đánh dấu u đã duyệt và cha của u
             mark[u] = true;
             parent[u] = p_u;
-            arr.push(u);
             // Kiểm tra các đỉnh v lân cận u
             const neighbors = G.getNeighborsOf(u);
             for (let v of neighbors)
@@ -61,12 +58,9 @@ function BFS(G: GraphType, s: number, mark: Array<boolean>, parent: Array<number
                     Q.en_queue({ u: v, p: u });
         }
     }
-    return arr;
 }
 
 function DFS(G: GraphType, s: number, mark: Array<boolean>, parent: Array<number>) {
-    var arr = [];
-
     // Khởi tạo ngăn xếp
     let S = new Stack();
     S.make_null_stack();
@@ -85,7 +79,6 @@ function DFS(G: GraphType, s: number, mark: Array<boolean>, parent: Array<number
             // Đánh dấu u đã duyệt và cha của u
             mark[u] = true;
             parent[u] = p_u;
-            arr.push(u);
             // Kiểm tra các đỉnh v lân cận u
             const neighbors = G.getNeighborsOf(u);
             for (let v of neighbors)
@@ -93,7 +86,6 @@ function DFS(G: GraphType, s: number, mark: Array<boolean>, parent: Array<number
                     S.push({ u: v, p: u });
         }
     }
-    return arr;
 }
 
 export function Tree_BFS(container: HTMLDivElement, G: GraphType, s: number) {
