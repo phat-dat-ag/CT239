@@ -1,4 +1,4 @@
-import Tree_Recursion from "./Recursion.js";
+import { Check_Connected_Division } from "./algoTreeRecursion.js";
 import { drawDirectedTree } from "./visGraph.js";
 
 const OO: number = 999999;
@@ -8,6 +8,7 @@ interface GraphType {
     getNodeCount(): number;
     getWeightOfEdge(u: number, v: number): number;
     adjacent(u: number, v: number): boolean;
+    getVertices(): Array<number>;
 }
 
 interface EdgeList {
@@ -55,7 +56,7 @@ function convertEdgeList(G: GraphType, sVertex: number) {
     }
 
     // Tìm bộ phận liên thông chứa s: true thì thuộc, false thì không
-    let connection: Array<boolean> = Tree_Recursion(G, sVertex);
+    let connection: Array<boolean> = Check_Connected_Division(G, sVertex);
 
     // Đếm số đỉnh thuộc bộ phận liên thông
     vertexCount = 0;

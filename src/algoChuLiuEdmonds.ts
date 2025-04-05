@@ -1,5 +1,5 @@
 import { drawDirectedTree } from "./visGraph.js";
-import Tree_Recursion from "./Recursion.js";
+import { Check_Connected_Division } from "./algoTreeRecursion.js";
 import Graph_EdgeList from "./Graph_EdgeList.js";
 import Tree from "./Graph_Tree.js";
 
@@ -16,7 +16,8 @@ interface GraphType {
     getNeighborsOf(u: number): Array<number>;
     getNodeCount(): number;
     adjacent(u: number, v: number): boolean;
-    convertEdgeList(): Graph_EdgeList
+    convertEdgeList(): Graph_EdgeList;
+    getVertices(): Array<number>;
 }
 
 let id: Array<number> = [];
@@ -132,7 +133,7 @@ export function ChuLiu(container: HTMLDivElement, graph: GraphType, s: number): 
     // console.log("Kết quả: ")
     // console.log(H[0]);
 
-    let isValidVertex: Array<boolean> = Tree_Recursion(graph, s);
+    let isValidVertex: Array<boolean> = Check_Connected_Division(graph, s);
     // console.log(isValidVertex);
 
     let directedTree: Array<DirectedTree> = [];

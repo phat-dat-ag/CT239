@@ -2,9 +2,11 @@ import Graph from "./Graph.js";
 import { drawGraph } from "./draw.js";
 import { drawVisGraph } from "./visGraph.js";
 import Dijkstra from "./algoDijkstra.js";
-import { Tree_BFS, Tree_DFS } from "./algoTreeTraverlling.js";
 import { ChuLiu } from "./algoChuLiuEdmonds.js";
 import Tree_TSP from "./algoTSP.js";
+import { All_Tree_DFS, Tree_DFS } from "./algoTreeDFS.js";
+import { All_Tree_BFS, Tree_BFS } from "./algoTreeBFS.js";
+import { All_Tree_Recursion, Tree_Recursion } from "./algoTreeRecursion.js";
 
 interface Point {
     i: number;
@@ -69,6 +71,10 @@ const SPANNING: number = 2;
 const TSP: number = 3;
 const DFS: number = 4;
 const BFS: number = 5;
+const RECURSION: number = 6;
+const DFS_ALL: number = 7;
+const BFS_ALL: number = 8;
+const RECURSION_ALL: number = 9;
 var selectedAlgorithm: number = 1;
 
 // Hiển thị thẻ div đã bị ẩn lên
@@ -278,21 +284,26 @@ speedSelectTag.onchange = (e: Event): void => {
     ms = parseInt(target.value);
 }
 
+const algorithmNeeds: Array<number> = [DIJKSTRA, SPANNING, TSP, DFS, BFS, RECURSION];
+
 var s: number | null = null, t: number | null = null;
 // Thực thi giải thuật được chọn
-algorithmRunButton.onclick = async (e: Event): Promise<void> => {
+algorithmRunButton.onclick = async (): Promise<void> => {
     s = parseInt(startVertexInput.value);
-    if (isNaN(s) || s === 0) {
-        confirm("Đỉnh bắt đầu không hợp lệ!");
-        return;
-    }
-    switch (selectedAlgorithm) {
-        case DIJKSTRA:
-            t = parseInt(endVertexInput.value);
-            if (isNaN(t) || t === 0) {
-                confirm("Đỉnh kết thúc không hợp lệ!");
+    for (let algo of algorithmNeeds)
+        if (selectedAlgorithm === algo)
+            if (isNaN(s) || s === 0) {
+                confirm("Đỉnh bắt đầu không hợp lệ!");
                 return;
             }
+    t = parseInt(endVertexInput.value);
+    if (selectedAlgorithm === DIJKSTRA && (isNaN(t) || t === 0)) {
+        confirm("Đỉnh kết thúc không hợp lệ!");
+        return;
+    }
+
+    switch (selectedAlgorithm) {
+        case DIJKSTRA:
             turnOffSelectedCell();
             await Dijkstra(container, G, s, t, ms);
             break;
@@ -308,10 +319,21 @@ algorithmRunButton.onclick = async (e: Event): Promise<void> => {
         case BFS:
             Tree_BFS(container, G, s);
             break;
+        case RECURSION:
+            Tree_Recursion(container, G, s);
+            break;
+        case DFS_ALL:
+            All_Tree_DFS(container, G);
+            break;
+        case BFS_ALL:
+            All_Tree_BFS(container, G);
+            break;
+        case RECURSION_ALL:
+            All_Tree_Recursion(container, G);
+            break;
         default:
             confirm("Chưa hỗ trợ các chức năng còn lại");
     }
-
 }
 
 // USE CASE 3: CẬP NHẬT TRỌNG SỐ TRÊN GIAO DIỆN
@@ -472,6 +494,10 @@ const algorithmOptions: Array<Option> = [
     { algorithmID: 3, title: "Bài toán TSP" },
     { algorithmID: 4, title: "Cây duyệt DFS" },
     { algorithmID: 5, title: "Cây duyệt BFS" },
+    { algorithmID: 6, title: "Cây duyệt Đệ quy" },
+    { algorithmID: 7, title: "DFS toàn đồ thị" },
+    { algorithmID: 8, title: "BFS toàn đồ thị" },
+    { algorithmID: 9, title: "Đệ quy toàn đồ thị" },
 ];
 
 for (let option of algorithmOptions) {
