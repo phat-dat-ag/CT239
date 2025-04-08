@@ -289,6 +289,9 @@ const algorithmNeeds: Array<number> = [DIJKSTRA, SPANNING, TSP, DFS, BFS, RECURS
 var s: number | null = null, t: number | null = null;
 // Thực thi giải thuật được chọn
 algorithmRunButton.onclick = async (): Promise<void> => {
+    // Xóa phần trình bày trước đó của thuật toán Moore Dijkstra
+    document.getElementById("block-2")?.replaceChildren();
+
     s = parseInt(startVertexInput.value);
     for (let algo of algorithmNeeds)
         if (selectedAlgorithm === algo)
