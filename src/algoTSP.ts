@@ -168,5 +168,10 @@ export default function Tree_TSP(container: HTMLDivElement, graph: GraphType, sV
     for (let e of selectedEdges)
         tree.push({ u: e.v, p: e.u, w: e.w });
 
-    drawDirectedTree(container, tree);
+    if (tree.length === 0) {
+        let block2: HTMLDivElement = document.getElementById("block-2") as HTMLDivElement;
+        block2.innerText = `Không tìm thấy cây TSP`;
+    }
+    else
+        drawDirectedTree(container, tree);
 }

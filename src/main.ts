@@ -291,16 +291,16 @@ var s: number | null = null, t: number | null = null;
 algorithmRunButton.onclick = async (): Promise<void> => {
     // Xóa phần trình bày trước đó của thuật toán Moore Dijkstra
     document.getElementById("block-2")?.replaceChildren();
-
+    const nodeCount: number = G.getNodeCount();
     s = parseInt(startVertexInput.value);
     for (let algo of algorithmNeeds)
         if (selectedAlgorithm === algo)
-            if (isNaN(s) || s === 0) {
+            if (isNaN(s) || s <= 0 || s > nodeCount) {
                 confirm("Đỉnh bắt đầu không hợp lệ!");
                 return;
             }
     t = parseInt(endVertexInput.value);
-    if (selectedAlgorithm === DIJKSTRA && (isNaN(t) || t === 0)) {
+    if (selectedAlgorithm === DIJKSTRA && (isNaN(t) || t <= 0 || t > nodeCount)) {
         confirm("Đỉnh kết thúc không hợp lệ!");
         return;
     }
