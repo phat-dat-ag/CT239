@@ -1,8 +1,5 @@
 import Graph_EdgeList from "./Graph_EdgeList.js";
-interface Point {
-    i: number;
-    j: number;
-}
+import { Point } from "./type/common.types.js";
 
 // Do phạm vi -99 đến 99 nên gắn 500 để là giá trị đặc biệt
 const NO_EDGE: number = 500;

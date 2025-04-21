@@ -1,24 +1,10 @@
 import { setMinPath, resetMinPath, setVisitingPath, resetVisitingPath, showUpdateVertex, hideUpdateVertex, colorizeNeighbors, deleteColorOfNeighbors } from "./draw.js";
 import { drawDirectedTree } from "./visGraph.js";
+import { GraphType } from "./type/graph.types.js";
+import { DirectedTree } from "./type/common.types.js";
 
 const OO: number = 999999999;
 var minPath: Array<number> = [];
-
-interface GraphType {
-    getRowCount(): number,
-    getColumnCount(): number,
-    getVertices(): Array<number>,
-    getNodeCount(): number,
-    getNeighborsOf(u: number): Array<number>,
-    adjacent(u: number, v: number): boolean,
-    getWeightOfEdge(u: number, v: number): number,
-}
-
-interface DirectedTree {
-    u: number;
-    p: number;
-    w: number | string;
-}
 
 function getPathTo(u: number, parents: Array<number>): Array<number> {
     const path: Array<number> = [];

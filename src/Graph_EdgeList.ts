@@ -1,9 +1,4 @@
-interface Edge {
-    u: number;
-    v: number;
-    w: number;
-    link: number;
-}
+import { Edge } from "./type/edge.types";
 
 // Cấu trúc đồ thị danh sách cung
 export default class Graph_EdgeList {

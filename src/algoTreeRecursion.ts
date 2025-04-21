@@ -1,22 +1,6 @@
 import { drawDirectedTree } from "./visGraph.js";
-
-interface GraphType {
-    getNeighborsOf(u: number): Array<number>;
-    getNodeCount(): number;
-    adjacent(u: number, v: number): boolean;
-    getVertices(): Array<number>;
-}
-
-interface Pair {
-    u: number;
-    p: number;
-}
-
-interface DirectedTree {
-    u: number;
-    p: number;
-    w: number | string;
-}
+import { GraphType } from "./type/graph.types.js";
+import { DirectedTree, Pair } from "./type/common.types.js";
 
 let G: GraphType;
 let mark: Array<boolean> = [];

@@ -1,17 +1,7 @@
 import Queue from "./Lib_Queus.js";
 import { drawDirectedTree } from "./visGraph.js";
-
-interface GraphType {
-    getNeighborsOf(u: number): Array<number>;
-    getNodeCount(): number;
-    getVertices(): Array<number>;
-}
-
-interface DirectedTree {
-    u: number;
-    p: number;
-    w: number | string;
-}
+import { GraphType } from "./type/graph.types.js";
+import { DirectedTree } from "./type/common.types.js";
 
 let nodeCount: number;
 let parent: Array<number> = [], mark: Array<boolean> = [];

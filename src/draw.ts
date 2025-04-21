@@ -1,21 +1,7 @@
+import { Size, Infor, Point } from "./type/common.types.js";
+
 const WEIGHT: number = 1;
 const VERTEX: number = 2;
-
-interface Size {
-    height: number;
-    width: number;
-    fontSize?: number;
-}
-interface Infor {
-    vertex: number;
-    weight: number;
-    mode: number;
-}
-
-interface Point {
-    i: number;
-    j: number;
-}
 
 type HandleClickCell = (e: MouseEvent) => void;
 
@@ -104,7 +90,6 @@ export function drawGraph(viewMode: number, container: HTMLDivElement, m: number
         container.appendChild(row);
     }
 }
-
 
 function getPointFromVertex(u: number, n: number): Point {
     return {

@@ -7,19 +7,7 @@ import Tree_TSP from "./algoTSP.js";
 import { All_Tree_DFS, Tree_DFS } from "./algoTreeDFS.js";
 import { All_Tree_BFS, Tree_BFS } from "./algoTreeBFS.js";
 import { All_Tree_Recursion, Tree_Recursion } from "./algoTreeRecursion.js";
-
-interface Point {
-    i: number;
-    j: number;
-}
-
-interface Option {
-    methodID?: string;
-    speed?: number;
-    viewMode?: string;
-    algorithmID?: number;
-    title: string;
-}
+import { Point, Option } from "./type/common.types.js";
 
 var file: File | null = null;
 var G = new Graph();

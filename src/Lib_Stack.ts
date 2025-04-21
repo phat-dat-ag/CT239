@@ -1,9 +1,5 @@
+import { Pair } from "./type/common.types.js";
 const MAX_LENGTH = 1000;
-
-interface Pair {
-    u: number;
-    p: number;
-}
 
 export default class Stack {
     private Elements: Array<Pair>;

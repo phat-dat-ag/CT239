@@ -2,23 +2,10 @@ import { drawDirectedTree } from "./visGraph.js";
 import { Check_Connected_Division } from "./algoTreeRecursion.js";
 import Graph_EdgeList from "./Graph_EdgeList.js";
 import Tree from "./Graph_Tree.js";
+import { GraphType } from "./type/graph.types.js";
+import { DirectedTree } from "./type/common.types.js";
 
 const OO = 999999;
-
-interface DirectedTree {
-    u: number;
-    p: number;
-    w: number;
-}
-
-// Theo kiểu ma trận đỉnh đỉnh
-interface GraphType {
-    getNeighborsOf(u: number): Array<number>;
-    getNodeCount(): number;
-    adjacent(u: number, v: number): boolean;
-    convertEdgeList(): Graph_EdgeList;
-    getVertices(): Array<number>;
-}
 
 let id: Array<number> = [];
 
