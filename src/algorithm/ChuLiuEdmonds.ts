@@ -1,10 +1,10 @@
-import { drawDirectedTree } from "./visGraph.js";
-import { Check_Connected_Division } from "./algoTreeRecursion.js";
-import Graph_EdgeList from "./Graph_EdgeList.js";
-import Tree from "./Graph_Tree.js";
-import { GraphType } from "./type/graph.types.js";
-import { DirectedTree } from "./type/common.types.js";
-import { OO } from "./constant/common.constant.js";
+import { drawDirectedTree } from "../vis/visGraph.js";
+import { Check_Connected_Division } from "./TreeRecursion.js";
+import Graph_EdgeList from "../Graph_EdgeList.js";
+import Tree from "../Graph_Tree.js";
+import { GraphType } from "../type/graph.types.js";
+import { DirectedTree } from "../type/common.types.js";
+import { OO } from "../constant/common.constant.js";
 
 let id: Array<number> = [];
 
@@ -82,7 +82,7 @@ function expand(H1: Tree, G: Graph_EdgeList, H: Tree): Tree {
     return H;
 }
 
-export function ChuLiu(graph: GraphType, s: number): void {
+export default function ChuLiu(graph: GraphType, s: number): void {
     let G: Array<Graph_EdgeList> = [];
     let H: Array<Tree> = [];
 

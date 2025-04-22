@@ -1,10 +1,10 @@
-import { Check_Connected_Division } from "./algoTreeRecursion.js";
-import { drawDirectedTree } from "./visGraph.js";
-import { GraphType } from "./type/graph.types.js";
-import { EdgeList } from "./type/edge.types.js";
-import { DirectedTree } from "./type/common.types.js";
-import { block_2 } from "./dom/domElements.js";
-import { OO } from "./constant/common.constant.js";
+import { Check_Connected_Division } from "./TreeRecursion.js";
+import { drawDirectedTree } from "../vis/visGraph.js";
+import { GraphType } from "../type/graph.types.js";
+import { EdgeList } from "../type/edge.types.js";
+import { DirectedTree } from "../type/common.types.js";
+import { block_2 } from "../dom/domElements.js";
+import { OO } from "../constant/common.constant.js";
 
 // Lưu đồ thị đỉnh đỉnh
 let G: GraphType;

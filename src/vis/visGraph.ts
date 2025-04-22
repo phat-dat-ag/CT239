@@ -1,8 +1,8 @@
 // @ts-ignore
 import { DataSet, Network, Node, Options } from "https://cdn.jsdelivr.net/npm/vis-network@9.1.2/standalone/esm/vis-network.min.js";
-import { Container } from "./dom/domElements.js";
-import { CustomNode } from "./type/vis.types.js";
-import { DirectedTree } from "./type/common.types.js";
+import { Container } from "../dom/domElements.js";
+import { CustomNode } from "../type/vis.types.js";
+import { DirectedTree } from "../type/common.types.js";
 
 // Cấu hình đồ thị
 const options: Options = {

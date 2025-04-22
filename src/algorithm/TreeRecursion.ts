@@ -1,6 +1,6 @@
-import { drawDirectedTree } from "./visGraph.js";
-import { GraphType } from "./type/graph.types.js";
-import { DirectedTree, Pair } from "./type/common.types.js";
+import { drawDirectedTree } from "../vis/visGraph.js";
+import { GraphType } from "../type/graph.types.js";
+import { DirectedTree, Pair } from "../type/common.types.js";
 
 let G: GraphType;
 let mark: Array<boolean> = [];

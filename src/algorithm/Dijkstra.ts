@@ -1,9 +1,9 @@
-import { setMinPath, resetMinPath, setVisitingPath, resetVisitingPath, showUpdateVertex, hideUpdateVertex, colorizeNeighbors, deleteColorOfNeighbors } from "./draw.js";
-import { drawDirectedTree } from "./visGraph.js";
-import { GraphType } from "./type/graph.types.js";
-import { DirectedTree } from "./type/common.types.js";
-import { block_1, block_2, block_3 } from "./dom/domElements.js";
-import { OO } from "./constant/common.constant.js";
+import { setMinPath, resetMinPath, setVisitingPath, resetVisitingPath, showUpdateVertex, hideUpdateVertex, colorizeNeighbors, deleteColorOfNeighbors } from "../draw/draw.js";
+import { drawDirectedTree } from "../vis/visGraph.js";
+import { GraphType } from "../type/graph.types.js";
+import { DirectedTree } from "../type/common.types.js";
+import { block_1, block_2, block_3 } from "../dom/domElements.js";
+import { OO } from "../constant/common.constant.js";
 
 var minPath: Array<number> = [];
 

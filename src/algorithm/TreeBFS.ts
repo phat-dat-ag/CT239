@@ -1,7 +1,7 @@
-import Stack from "./Lib_Stack.js";
-import { drawDirectedTree } from "./visGraph.js";
-import { GraphType } from "./type/graph.types.js";
-import { DirectedTree } from "./type/common.types.js";
+import Queue from "../library/Queue.js";
+import { drawDirectedTree } from "../vis/visGraph.js";
+import { GraphType } from "../type/graph.types.js";
+import { DirectedTree } from "../type/common.types.js";
 
 let nodeCount: number;
 let parent: Array<number> = [], mark: Array<boolean> = [];
@@ -29,19 +29,19 @@ function createTree() {
             tree.push({ u, p: parent[u], w: "" });
 }
 
-function DFS(G: GraphType, s: number, mark: Array<boolean>, parent: Array<number>) {
-    // Khởi tạo ngăn xếp
-    let S = new Stack();
-    S.make_null_stack();
+function BFS(G: GraphType, s: number, mark: Array<boolean>, parent: Array<number>) {
+    // Khởi tạo hàng đợi
+    let Q = new Queue();
+    Q.make_null_queue();
 
-    // Đưa s vào ngăn xếp
-    S.push({ u: s, p: -1 });
+    // Đưa s vào hàng đợi
+    Q.en_queue({ u: s, p: -1 });
 
-    // Duyệt đến khi ngăn xếp rỗng
-    while (!S.empty_stack()) {
-        // Lấy đỉnh u và p_u ra khỏi ngăn xếp và xóa
-        const pair = S.top();
-        S.pop();
+    // Duyệt đến khi hàng đợi rỗng
+    while (!Q.empty_queue()) {
+        // Lấy đỉnh u và p_u ra khỏi hàng đợi và xóa
+        const pair = Q.front();
+        Q.de_queue();
         const u = pair.u;
         const p_u = pair.p;
         if (!mark[u]) {
@@ -52,23 +52,23 @@ function DFS(G: GraphType, s: number, mark: Array<boolean>, parent: Array<number
             const neighbors = G.getNeighborsOf(u);
             for (let v of neighbors)
                 if (!mark[v])
-                    S.push({ u: v, p: u });
+                    Q.en_queue({ u: v, p: u });
         }
     }
 }
 
-export function Tree_DFS(G: GraphType, s: number) {
+export function Tree_BFS(G: GraphType, s: number) {
     init(G);
-    DFS(G, s, mark, parent);
+    BFS(G, s, mark, parent);
     createTree();
     drawDirectedTree(tree);
 }
 
-export function All_Tree_DFS(G: GraphType) {
+export function All_Tree_BFS(G: GraphType) {
     init(G);
     for (let u = 1; u <= nodeCount; u++)
         if (!mark[u])
-            DFS(G, u, mark, parent);
+            BFS(G, u, mark, parent);
     createTree();
     drawDirectedTree(tree);
 }

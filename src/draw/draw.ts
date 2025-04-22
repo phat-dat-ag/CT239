@@ -1,6 +1,6 @@
-import { Size, Infor, Point } from "./type/common.types.js";
-import { Container } from "./dom/domElements.js";
-import { inforSelection } from "./constant/common.constant.js";
+import { Size, Infor, Point } from "../type/common.types.js";
+import { Container } from "../dom/domElements.js";
+import { inforSelection } from "../constant/common.constant.js";
 
 type HandleClickCell = (e: MouseEvent) => void;
 

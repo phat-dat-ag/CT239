@@ -1,5 +1,5 @@
-import { Pair } from "./type/common.types.js";
-import { MAX_LENGTH } from "./constant/common.constant.js";
+import { Pair } from "../type/common.types.js";
+import { MAX_LENGTH } from "../constant/common.constant.js";
 
 export default class Stack {
     private Elements: Array<Pair>;
