@@ -1,14 +1,6 @@
 import Graph_EdgeList from "./Graph_EdgeList.js";
 import { Point } from "./type/common.types.js";
-
-// Do phạm vi -99 đến 99 nên gắn 500 để là giá trị đặc biệt
-const NO_EDGE: number = 500;
-const directions: Array<Point> = [
-    { i: -1, j: 0 },
-    { i: 0, j: -1 },
-    { i: 0, j: 1 },
-    { i: 1, j: 0 }
-];
+import { NO_EDGE, directions } from "./constant/common.constant.js";
 
 function getVertexFromPoint(point: Point, n: number): number {
     return point.i * n + (point.j + 1);

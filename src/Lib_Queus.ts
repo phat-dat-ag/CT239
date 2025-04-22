@@ -1,5 +1,5 @@
 import { Pair } from "./type/common.types.js";
-const MAX_LENGTH = 1000;
+import { MAX_LENGTH } from "./constant/common.constant.js";
 
 export default class Queue {
     private Elements: Array<Pair>;

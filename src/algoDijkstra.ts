@@ -3,8 +3,8 @@ import { drawDirectedTree } from "./visGraph.js";
 import { GraphType } from "./type/graph.types.js";
 import { DirectedTree } from "./type/common.types.js";
 import { block_1, block_2, block_3 } from "./dom/domElements.js";
+import { OO } from "./constant/common.constant.js";
 
-const OO: number = 999999999;
 var minPath: Array<number> = [];
 
 function getPathTo(u: number, parents: Array<number>): Array<number> {

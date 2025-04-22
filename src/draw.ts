@@ -1,8 +1,6 @@
 import { Size, Infor, Point } from "./type/common.types.js";
 import { Container } from "./dom/domElements.js";
-
-const WEIGHT: number = 1;
-const VERTEX: number = 2;
+import { inforSelection } from "./constant/common.constant.js";
 
 type HandleClickCell = (e: MouseEvent) => void;
 
@@ -32,9 +30,9 @@ function drawCell(idCell: string, cellSize: Size, inforCell: Infor): HTMLSpanEle
     else {
         // Không là chướng ngại vật: là đỉnh
         let data: number = 99;
-        if (inforCell.mode === VERTEX)
+        if (inforCell.mode === inforSelection.VERTEX)
             data = inforCell.vertex;
-        else if (inforCell.mode === WEIGHT)
+        else if (inforCell.mode === inforSelection.WEIGHT)
             data = inforCell.weight;
         else
             confirm("Lỗi xảy ra khi tạo một ô!");

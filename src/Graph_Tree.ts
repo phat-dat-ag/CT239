@@ -1,4 +1,4 @@
-const OO = 999999;
+import { OO } from "./constant/common.constant.js";
 
 // Cấu trúc Cây (đồ thị xấp xỉ)
 export default class Tree {

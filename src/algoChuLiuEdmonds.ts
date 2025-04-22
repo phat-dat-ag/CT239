@@ -4,8 +4,7 @@ import Graph_EdgeList from "./Graph_EdgeList.js";
 import Tree from "./Graph_Tree.js";
 import { GraphType } from "./type/graph.types.js";
 import { DirectedTree } from "./type/common.types.js";
-
-const OO = 999999;
+import { OO } from "./constant/common.constant.js";
 
 let id: Array<number> = [];
 

@@ -7,34 +7,24 @@ import Tree_TSP from "./algoTSP.js";
 import { All_Tree_DFS, Tree_DFS } from "./algoTreeDFS.js";
 import { All_Tree_BFS, Tree_BFS } from "./algoTreeBFS.js";
 import { All_Tree_Recursion, Tree_Recursion } from "./algoTreeRecursion.js";
-import { Point, Option } from "./type/common.types.js";
-import { Container, CreateMatrix, ViewMode, Algorithm, Pannel, MenuConfig, block_2 } from "./dom/domElements.js";
+import { Point } from "./type/common.types.js";
+import { CreateMatrix, ViewMode, Algorithm, Pannel, MenuConfig, block_2 } from "./dom/domElements.js";
+import { methodOptions, speedOptions, viewModeOptions, algorithmOptions } from "./constant/options.constant.js";
+import { quickSelection, viewModeSelection, algorithmSelection, algorithmNeeds } from "./constant/common.constant.js";
 
 var file: File | null = null;
 var G = new Graph();
 var globalPoint: Point = { i: 0, j: 0 };
 
+// Chọn nhanh 1 đỉnh thay vì nhập
 var selectedCell: HTMLSpanElement;
-const START: number = 1;
-const END: number = 2;
-const NO_CHOICE: number = -1
-var activatedOnCell: number = NO_CHOICE;
+var activatedOnCell: number = quickSelection.NO_CHOICE;
 
-const WEIGHT: number = 1;
-const VERTEX: number = 2;
-const GRAPH: number = 3;
-var selectedViewMode: number = WEIGHT;
+// Chọn cách hiển thị ma trận
+var selectedViewMode: number = viewModeSelection.WEIGHT_GRAPH;
 
-const DIJKSTRA: number = 1;
-const SPANNING: number = 2;
-const TSP: number = 3;
-const DFS: number = 4;
-const BFS: number = 5;
-const RECURSION: number = 6;
-const DFS_ALL: number = 7;
-const BFS_ALL: number = 8;
-const RECURSION_ALL: number = 9;
-var selectedAlgorithm: number = 1;
+// Chọn thuật toan
+var selectedAlgorithm: number = algorithmSelection.DIJKSTRA;
 
 // Hiển thị thẻ div đã bị ẩn lên
 function turnOnDiv(divs: Array<HTMLDivElement>) {
@@ -71,10 +61,6 @@ function checkInput(matrix: Array<Array<number>>): boolean {
 }
 
 // USE CASE 1: TÙY CHỌN CÁCH SINH RA MA TRẬN
-const methodOptions: Array<Option> = [
-    { methodID: "0", title: "Ngẫu nhiên" },
-    { methodID: "1", title: "Đọc file" },
-]
 for (let method of methodOptions) {
     const op: HTMLOptionElement = document.createElement("option") as HTMLOptionElement;
     op.value = `${method.methodID}`;
@@ -143,12 +129,12 @@ function handleClickCell(e: Event): void {
     const vertex: number = getVertexFromPoint(globalPoint, n);
     Pannel.inforCell.innerHTML = `Ô <b style="color:red">${vertex}</b>, Tọa độ: (${globalPoint.i}, ${globalPoint.j})`;
 
-    if (activatedOnCell === START)
+    if (activatedOnCell === quickSelection.START)
         MenuConfig.startInput.value = `${vertex}`;
-    if (activatedOnCell === END)
+    if (activatedOnCell === quickSelection.END)
         MenuConfig.endInput.value = `${vertex}`;
     // Trả lại: chỉ cho phép chọn đỉnh bắt đầu/ kết thúc 1 lần thôi
-    activatedOnCell = NO_CHOICE;
+    activatedOnCell = quickSelection.NO_CHOICE;
 }
 
 // Hỗ trợ sinh ma trận: Hàm đọc file
@@ -204,7 +190,7 @@ CreateMatrix.button.onclick = async function (): Promise<void> {
         const m: number = G.getRowCount();
         const n: number = G.getColumnCount();
         const weightMatrix: Array<Array<number>> = G.getWeightMatrix();
-        drawGraph(WEIGHT, m, n, weightMatrix, handleClickCell);
+        drawGraph(viewModeSelection.WEIGHT_GRAPH, m, n, weightMatrix, handleClickCell);
         // Đặt lại s và t
         s = 0;
         t = 0;
@@ -224,14 +210,6 @@ CreateMatrix.button.onclick = async function (): Promise<void> {
 
 // USE CASE 2: TÙY CHỌN TỐC ĐỘ MINH HỌA GIẢI THUẬT
 var ms: number = 3000;
-
-const speedOptions: Array<Option> = [
-    { speed: 3000, title: "Rất chậm" },
-    { speed: 2000, title: "Chậm" },
-    { speed: 1000, title: "Bình thường" },
-    { speed: 100, title: "Nhanh" },
-    { speed: 10, title: "Rất nhanh" }
-]
 for (let option of speedOptions) {
     const op: HTMLOptionElement = document.createElement("option");
     op.value = `${option.speed}`;
@@ -242,8 +220,6 @@ MenuConfig.speedSelectTag.onchange = (e: Event): void => {
     const target: HTMLSelectElement = e.target as HTMLSelectElement;
     ms = parseInt(target.value);
 }
-
-const algorithmNeeds: Array<number> = [DIJKSTRA, SPANNING, TSP, DFS, BFS, RECURSION];
 
 var s: number | null = null, t: number | null = null;
 // Thực thi giải thuật được chọn
@@ -259,38 +235,38 @@ MenuConfig.runButton.onclick = async (): Promise<void> => {
                 return;
             }
     t = parseInt(MenuConfig.endInput.value);
-    if (selectedAlgorithm === DIJKSTRA && (isNaN(t) || t <= 0 || t > nodeCount)) {
+    if (selectedAlgorithm === algorithmSelection.DIJKSTRA && (isNaN(t) || t <= 0 || t > nodeCount)) {
         confirm("Đỉnh kết thúc không hợp lệ!");
         return;
     }
 
     switch (selectedAlgorithm) {
-        case DIJKSTRA:
+        case algorithmSelection.DIJKSTRA:
             turnOffSelectedCell();
             await Dijkstra(G, s, t, ms);
             break;
-        case SPANNING:
+        case algorithmSelection.SPANNING:
             ChuLiu(G, s);
             break;
-        case TSP:
+        case algorithmSelection.TSP:
             Tree_TSP(G, s);
             break;
-        case DFS:
+        case algorithmSelection.DFS:
             Tree_DFS(G, s);
             break;
-        case BFS:
+        case algorithmSelection.BFS:
             Tree_BFS(G, s);
             break;
-        case RECURSION:
+        case algorithmSelection.RECURSION:
             Tree_Recursion(G, s);
             break;
-        case DFS_ALL:
+        case algorithmSelection.DFS_ALL:
             All_Tree_DFS(G);
             break;
-        case BFS_ALL:
+        case algorithmSelection.BFS_ALL:
             All_Tree_BFS(G);
             break;
-        case RECURSION_ALL:
+        case algorithmSelection.RECURSION_ALL:
             All_Tree_Recursion(G);
             break;
         default:
@@ -387,12 +363,12 @@ Pannel.updateButton.onclick = function (e: Event): void {
 
 // Chọn đỉnh bắt đầu thay vì nhập
 MenuConfig.startClick.onclick = function () {
-    activatedOnCell = START;
+    activatedOnCell = quickSelection.START;
 }
 
 // Chọn đỉnh kết thúc thay vì nhập
 MenuConfig.endClick.onclick = function () {
-    activatedOnCell = END;
+    activatedOnCell = quickSelection.END;
 }
 
 // USE CASE 4: ĐÓNG GIAO DIỆN CẬP NHẬT TRỌNG SỐ
@@ -402,12 +378,6 @@ Pannel.exitButton.onclick = (e: Event): void => {
 }
 
 // USE CASE 5: CHỌN CHẾ ĐỘ XEM
-const viewModeOptions: Array<Option> = [
-    { viewMode: "weight", title: "Ma trận với trọng số" },
-    { viewMode: "vertex", title: "Ma trận số thứ tự đỉnh" },
-    { viewMode: "graph", title: "Đồ thị minh họa" }
-];
-
 for (let option of viewModeOptions) {
     const op: HTMLOptionElement = document.createElement("option") as HTMLOptionElement;
     op.value = `${option.viewMode}`;
@@ -418,11 +388,11 @@ for (let option of viewModeOptions) {
 ViewMode.selectTag.onchange = (e) => {
     const target: HTMLSelectElement = e.target as HTMLSelectElement;
     if (target.value === "weight")
-        selectedViewMode = WEIGHT;
+        selectedViewMode = viewModeSelection.WEIGHT_GRAPH;
     else if (target.value === "graph")
-        selectedViewMode = GRAPH;
+        selectedViewMode = viewModeSelection.DIRECTED_GRAPH;
     else if (target.value === "vertex")
-        selectedViewMode = VERTEX;
+        selectedViewMode = viewModeSelection.VERTEX_GRAPH;
     else
         confirm("Lỗi chức năng chọn chế độ xem rồi!");
 }
@@ -431,15 +401,15 @@ ViewMode.button.onclick = () => {
     const m: number = G.getRowCount();
     const n: number = G.getColumnCount();
     switch (selectedViewMode) {
-        case WEIGHT:
+        case viewModeSelection.WEIGHT_GRAPH:
             turnOnDiv([MenuConfig.container, Algorithm.container]);
-            drawGraph(WEIGHT, m, n, G.getWeightMatrix(), handleClickCell);
+            drawGraph(viewModeSelection.WEIGHT_GRAPH, m, n, G.getWeightMatrix(), handleClickCell);
             break;
-        case VERTEX:
+        case viewModeSelection.VERTEX_GRAPH:
             turnOnDiv([MenuConfig.container, Algorithm.container]);
-            drawGraph(VERTEX, m, n, G.getWeightMatrix(), handleClickCell);
+            drawGraph(viewModeSelection.VERTEX_GRAPH, m, n, G.getWeightMatrix(), handleClickCell);
             break;
-        case GRAPH:
+        case viewModeSelection.DIRECTED_GRAPH:
             turnOffDiv([MenuConfig.container, Pannel.container, Algorithm.container]);
             drawVisGraph(G.getVertices(), G.getVertexMatrix());
             break;
@@ -450,18 +420,6 @@ ViewMode.button.onclick = () => {
 }
 
 // USE CASE 6: CHỌN CHỨC NĂNG/ THUẬT TOÁN
-const algorithmOptions: Array<Option> = [
-    { algorithmID: 1, title: "Moore Dijkstra" },
-    { algorithmID: 2, title: "Cây phủ tối thiểu" },
-    { algorithmID: 3, title: "Bài toán TSP" },
-    { algorithmID: 4, title: "Cây duyệt DFS" },
-    { algorithmID: 5, title: "Cây duyệt BFS" },
-    { algorithmID: 6, title: "Cây duyệt Đệ quy" },
-    { algorithmID: 7, title: "DFS toàn đồ thị" },
-    { algorithmID: 8, title: "BFS toàn đồ thị" },
-    { algorithmID: 9, title: "Đệ quy toàn đồ thị" },
-];
-
 for (let option of algorithmOptions) {
     const op: HTMLOptionElement = document.createElement("option") as HTMLOptionElement;
     op.value = `${option.algorithmID}`;
@@ -489,7 +447,7 @@ function turnOnInputDiv() {
 }
 
 Algorithm.button.onclick = () => {
-    if (selectedAlgorithm === DIJKSTRA)
+    if (selectedAlgorithm === algorithmSelection.DIJKSTRA)
         turnOnInputDiv();
     else
         turnOffInputDiv();

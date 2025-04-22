@@ -4,8 +4,7 @@ import { GraphType } from "./type/graph.types.js";
 import { EdgeList } from "./type/edge.types.js";
 import { DirectedTree } from "./type/common.types.js";
 import { block_2 } from "./dom/domElements.js";
-
-const OO: number = 999999;
+import { OO } from "./constant/common.constant.js";
 
 // Lưu đồ thị đỉnh đỉnh
 let G: GraphType;
