@@ -83,7 +83,7 @@ function expand(H1: Tree, G: Graph_EdgeList, H: Tree): Tree {
     return H;
 }
 
-export function ChuLiu(container: HTMLDivElement, graph: GraphType, s: number): void {
+export function ChuLiu(graph: GraphType, s: number): void {
     let G: Array<Graph_EdgeList> = [];
     let H: Array<Tree> = [];
 
@@ -130,5 +130,5 @@ export function ChuLiu(container: HTMLDivElement, graph: GraphType, s: number): 
         if ((H[0].parent[u] !== -1 || H[0].weight[u] !== OO) && isValidVertex[u])
             directedTree.push({ u, p: H[0].parent[u], w: H[0].weight[u] });
 
-    drawDirectedTree(container, directedTree);
+    drawDirectedTree(directedTree);
 }

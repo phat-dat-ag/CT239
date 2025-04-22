@@ -1,4 +1,5 @@
 import { Size, Infor, Point } from "./type/common.types.js";
+import { Container } from "./dom/domElements.js";
 
 const WEIGHT: number = 1;
 const VERTEX: number = 2;
@@ -51,12 +52,12 @@ function drawCell(idCell: string, cellSize: Size, inforCell: Infor): HTMLSpanEle
 }
 
 // Vẽ toàn bộ ma trận
-export function drawGraph(viewMode: number, container: HTMLDivElement, m: number, n: number, weightMatrix: Array<Array<number>>, handleClickCell: HandleClickCell): void {
-    container.replaceChildren();
+export function drawGraph(viewMode: number, m: number, n: number, weightMatrix: Array<Array<number>>, handleClickCell: HandleClickCell): void {
+    Container.replaceChildren();
 
     const containerSize: Size = {
-        height: container.clientHeight,
-        width: container.clientWidth
+        height: Container.clientHeight,
+        width: Container.clientWidth
     }
     const rowSize: Size = {
         height: containerSize.height * 0.9 / weightMatrix.length,
@@ -87,7 +88,7 @@ export function drawGraph(viewMode: number, container: HTMLDivElement, m: number
             }
             row.appendChild(cell);
         }
-        container.appendChild(row);
+        Container.appendChild(row);
     }
 }
 
@@ -171,7 +172,7 @@ export async function showUpdateVertex(u: number, n: number, ms: number) {
 }
 
 // Xóa màu 1 đỉnh khi đã thao tác xong
-export function hideUpdateVertex(u: number, n: number, ms: number) {
+export function hideUpdateVertex(u: number, n: number) {
     const uPoint: Point = getPointFromVertex(u, n);
     const cell: HTMLSpanElement = document.getElementById(`${uPoint.i}_${uPoint.j}`) as HTMLSpanElement;
     cell.classList.remove("updating-vertex");

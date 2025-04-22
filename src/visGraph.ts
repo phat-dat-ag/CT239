@@ -1,5 +1,6 @@
 // @ts-ignore
 import { DataSet, Network, Node, Options } from "https://cdn.jsdelivr.net/npm/vis-network@9.1.2/standalone/esm/vis-network.min.js";
+import { Container } from "./dom/domElements.js";
 
 // Định nghĩa kiểu dữ liệu cho Node
 interface CustomNode extends Node {
@@ -20,7 +21,7 @@ const options: Options = {
 };
 
 // Hàm vẽ đồ thị
-export function drawVisGraph(container: HTMLElement, vertices: Array<number>, vertexMatrix: Array<Array<number>>) {
+export function drawVisGraph(vertices: Array<number>, vertexMatrix: Array<Array<number>>) {
     // Tạo dữ liệu cho các node (đỉnh)
     let nodesList: DataSet<CustomNode> = [];
     for (let vertex of vertices) {
@@ -44,8 +45,8 @@ export function drawVisGraph(container: HTMLElement, vertices: Array<number>, ve
                 })
     const edges = new DataSet(edgeList);
 
-    container.replaceChildren();
-    new Network(container, { nodes, edges }, options);
+    Container.replaceChildren();
+    new Network(Container, { nodes, edges }, options);
 }
 
 interface directedTree {
@@ -55,7 +56,7 @@ interface directedTree {
 }
 
 // Chỉ áp dụng cho đơn đồ thị có hướng
-export function drawDirectedTree(container: HTMLDivElement, tree: Array<directedTree>) {
+export function drawDirectedTree(tree: Array<directedTree>) {
     let nodesList: DataSet<CustomNode> = [];
     for (let edge of tree) {
         nodesList.push({
@@ -77,6 +78,6 @@ export function drawDirectedTree(container: HTMLDivElement, tree: Array<directed
             })
     const edges = new DataSet(edgeList);
 
-    container.replaceChildren();
-    new Network(container, { nodes, edges }, options);
+    Container.replaceChildren();
+    new Network(Container, { nodes, edges }, options);
 }

@@ -54,19 +54,19 @@ export function Check_Connected_Division(inputG: GraphType, s: number): Array<bo
 }
 
 // Chỉ duyệt bộ phận chứa đỉnh s bắt đầu
-export function Tree_Recursion(container: HTMLDivElement, inputG: GraphType, s: number) {
+export function Tree_Recursion(inputG: GraphType, s: number) {
     init(inputG);
     Recursion({ u: s, p: -1 });
     createTree();
-    drawDirectedTree(container, tree);
+    drawDirectedTree(tree);
 }
 
 // Duyệt hết bắt đầu từ 1
-export function All_Tree_Recursion(container: HTMLDivElement, inputG: GraphType) {
+export function All_Tree_Recursion(inputG: GraphType) {
     init(inputG);
     for (let u = 1; u <= nodeCount; u++)
         if (!mark[u])
             Recursion({ u, p: -1 });
     createTree();
-    drawDirectedTree(container, tree);
+    drawDirectedTree(tree);
 }

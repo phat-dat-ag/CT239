@@ -3,6 +3,7 @@ import { drawDirectedTree } from "./visGraph.js";
 import { GraphType } from "./type/graph.types.js";
 import { EdgeList } from "./type/edge.types.js";
 import { DirectedTree } from "./type/common.types.js";
+import { block_2 } from "./dom/domElements.js";
 
 const OO: number = 999999;
 
@@ -132,7 +133,7 @@ function TSP(u: number, index: number) {
     }
 }
 
-export default function Tree_TSP(container: HTMLDivElement, graph: GraphType, sVertex: number) {
+export default function Tree_TSP(graph: GraphType, sVertex: number) {
     G = graph;
     convertEdgeList(graph, sVertex);
     // Khởi tạo trước khi chạy
@@ -151,10 +152,8 @@ export default function Tree_TSP(container: HTMLDivElement, graph: GraphType, sV
     for (let e of selectedEdges)
         tree.push({ u: e.v, p: e.u, w: e.w });
 
-    if (tree.length === 0) {
-        let block2: HTMLDivElement = document.getElementById("block-2") as HTMLDivElement;
-        block2.innerText = `Không tìm thấy cây TSP`;
-    }
+    if (tree.length === 0)
+        block_2.innerText = `Không tìm thấy cây TSP`;
     else
-        drawDirectedTree(container, tree);
+        drawDirectedTree(tree);
 }

@@ -57,18 +57,18 @@ function BFS(G: GraphType, s: number, mark: Array<boolean>, parent: Array<number
     }
 }
 
-export function Tree_BFS(container: HTMLDivElement, G: GraphType, s: number) {
+export function Tree_BFS(G: GraphType, s: number) {
     init(G);
     BFS(G, s, mark, parent);
     createTree();
-    drawDirectedTree(container, tree);
+    drawDirectedTree(tree);
 }
 
-export function All_Tree_BFS(container: HTMLDivElement, G: GraphType) {
+export function All_Tree_BFS(G: GraphType) {
     init(G);
     for (let u = 1; u <= nodeCount; u++)
         if (!mark[u])
             BFS(G, u, mark, parent);
     createTree();
-    drawDirectedTree(container, tree);
+    drawDirectedTree(tree);
 }

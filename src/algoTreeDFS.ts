@@ -57,18 +57,18 @@ function DFS(G: GraphType, s: number, mark: Array<boolean>, parent: Array<number
     }
 }
 
-export function Tree_DFS(container: HTMLDivElement, G: GraphType, s: number) {
+export function Tree_DFS(G: GraphType, s: number) {
     init(G);
     DFS(G, s, mark, parent);
     createTree();
-    drawDirectedTree(container, tree);
+    drawDirectedTree(tree);
 }
 
-export function All_Tree_DFS(container: HTMLDivElement, G: GraphType) {
+export function All_Tree_DFS(G: GraphType) {
     init(G);
     for (let u = 1; u <= nodeCount; u++)
         if (!mark[u])
             DFS(G, u, mark, parent);
     createTree();
-    drawDirectedTree(container, tree);
+    drawDirectedTree(tree);
 }

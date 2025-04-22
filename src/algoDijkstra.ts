@@ -2,6 +2,7 @@ import { setMinPath, resetMinPath, setVisitingPath, resetVisitingPath, showUpdat
 import { drawDirectedTree } from "./visGraph.js";
 import { GraphType } from "./type/graph.types.js";
 import { DirectedTree } from "./type/common.types.js";
+import { block_1, block_2, block_3 } from "./dom/domElements.js";
 
 const OO: number = 999999999;
 var minPath: Array<number> = [];
@@ -47,12 +48,10 @@ async function updateVisitingPath(u: number, parents: Array<number>, visitingPat
     }
 }
 
-export default async function Dijkstra(container: HTMLDivElement, G: GraphType, s: number, t: number, ms: number): Promise<void> {
+export default async function Dijkstra(G: GraphType, s: number, t: number, ms: number): Promise<void> {
     const m: number = G.getRowCount();
     const n: number = G.getColumnCount();
-    const block_1: HTMLDivElement = document.getElementById("block-1") as HTMLDivElement;
-    const block_2: HTMLDivElement = document.getElementById("block-2") as HTMLDivElement;
-    const block_3: HTMLDivElement = document.getElementById("block-3") as HTMLDivElement;
+
     // Làm mới minPath trước đó
     resetMinPath(minPath.reverse(), n)
     minPath = [];
@@ -142,7 +141,7 @@ export default async function Dijkstra(container: HTMLDivElement, G: GraphType, 
             updateVertex.innerHTML = decisionString;
             block_3.appendChild(updateVertex);
             await showUpdateVertex(v, n, ms);
-            hideUpdateVertex(v, n, ms);
+            hideUpdateVertex(v, n);
             block_3.replaceChildren();
         }
         block_2.replaceChildren();
@@ -177,7 +176,7 @@ export default async function Dijkstra(container: HTMLDivElement, G: GraphType, 
     const viewTreeButton: HTMLButtonElement = document.createElement("button") as HTMLButtonElement;
     viewTreeButton.innerText = "Xem cây đường đi ngắn nhất";
     viewTreeButton.addEventListener("click", function () {
-        drawDirectedTree(container, directedTree);
+        drawDirectedTree(directedTree);
     })
     block_2.appendChild(viewTreeButton);
 }
