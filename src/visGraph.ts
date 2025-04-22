@@ -1,11 +1,8 @@
 // @ts-ignore
 import { DataSet, Network, Node, Options } from "https://cdn.jsdelivr.net/npm/vis-network@9.1.2/standalone/esm/vis-network.min.js";
 import { Container } from "./dom/domElements.js";
-
-// Định nghĩa kiểu dữ liệu cho Node
-interface CustomNode extends Node {
-    color?: { background: string; border?: string };
-}
+import { CustomNode } from "./type/vis.types.js";
+import { DirectedTree } from "./type/common.types.js";
 
 // Cấu hình đồ thị
 const options: Options = {
@@ -49,14 +46,8 @@ export function drawVisGraph(vertices: Array<number>, vertexMatrix: Array<Array<
     new Network(Container, { nodes, edges }, options);
 }
 
-interface directedTree {
-    u: number;
-    p: number;
-    w: number | string;
-}
-
 // Chỉ áp dụng cho đơn đồ thị có hướng
-export function drawDirectedTree(tree: Array<directedTree>) {
+export function drawDirectedTree(tree: Array<DirectedTree>) {
     let nodesList: DataSet<CustomNode> = [];
     for (let edge of tree) {
         nodesList.push({
