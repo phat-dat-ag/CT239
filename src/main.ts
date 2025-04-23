@@ -3,11 +3,11 @@ import { Point } from "./type/common.types.js";
 import { CreateMatrix, ViewMode, Algorithm, Pannel, MenuConfig } from "./dom/domElements.js";
 import { methodOptions, speedOptions, viewModeOptions, algorithmOptions } from "./constant/options.constant.js";
 import { quickSelection, viewModeSelection, algorithmSelection } from "./constant/common.constant.js";
-import { turnOnSelectedCell, turnOffSelectedCell, turnOffDiv, createSelectTag, createFileGroup } from "./utils/ui.utils.js";
+import { turnOnSelectedCell, turnOffSelectedCell, createSelectTag, createFileGroup } from "./utils/ui.utils.js";
 import { createMatrixFunc } from "./function/createMatrix.js";
 import { runAlgorithm } from "./function/runAlgorithm.js";
 import { updateWeight } from "./function/updateWeight.js";
-import { handleClickOneCell, handleClickViewModeButton, handleClickAlgorithmButton } from "./event/onclick.event.js";
+import { handleClickOneCell, handleClickViewModeButton, handleClickAlgorithmButton, handleClickExitButton } from "./event/onclick.event.js";
 
 var file: File | null = null;
 var G = new Graph();
@@ -102,15 +102,14 @@ MenuConfig.endClick.onclick = function () {
 }
 
 // USE CASE 4: ĐÓNG GIAO DIỆN CẬP NHẬT TRỌNG SỐ
-Pannel.exitButton.onclick = (e: Event): void => {
-    turnOffDiv([Pannel.container]);
-    turnOffSelectedCell(selectedCell);
+Pannel.exitButton.onclick = () => {
+    handleClickExitButton(Pannel, selectedCell);
 }
 
 // USE CASE 5: CHỌN CHẾ ĐỘ XEM
 createSelectTag(viewModeOptions, ViewMode.selectTag);
 
-ViewMode.selectTag.onchange = (e) => {
+ViewMode.selectTag.onchange = (e: Event) => {
     const target: HTMLSelectElement = e.target as HTMLSelectElement;
     if (target.value === "weight")
         selectedViewMode = viewModeSelection.WEIGHT_GRAPH;
@@ -129,7 +128,7 @@ ViewMode.button.onclick = () => {
 // USE CASE 6: CHỌN CHỨC NĂNG/ THUẬT TOÁN
 createSelectTag(algorithmOptions, Algorithm.selectTag);
 
-Algorithm.selectTag.onchange = (e) => {
+Algorithm.selectTag.onchange = (e: Event) => {
     const target: HTMLSelectElement = e.target as HTMLSelectElement;
     selectedAlgorithm = parseInt(target.value);
 }
