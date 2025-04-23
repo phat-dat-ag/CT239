@@ -49,7 +49,6 @@ async function updateVisitingPath(u: number, parents: Array<number>, visitingPat
 }
 
 export default async function Dijkstra(G: GraphType, s: number, t: number, ms: number): Promise<void> {
-    const m: number = G.getRowCount();
     const n: number = G.getColumnCount();
 
     // Làm mới minPath trước đó
@@ -60,14 +59,6 @@ export default async function Dijkstra(G: GraphType, s: number, t: number, ms: n
     const vertices: Array<number> = G.getVertices();
     const vertexCount: number = vertices.length;
 
-    if (s <= 0 || s > m * n || !vertices.includes(s)) {
-        confirm(`Đỉnh bắt đầu là ${s}: không hợp lệ`);
-        return;
-    }
-    if (t <= 0 || t > m * n || !vertices.includes(t)) {
-        confirm(`Đỉnh kết thúc là ${t}: không hợp lệ`);
-        return;
-    }
     // Khởi tạo 1 mảng chứa các đỉnh đang duyệt
     let visitingPath: Array<number> = [];
 

@@ -1,4 +1,6 @@
 import { Point } from "../type/common.types";
+import { GraphType } from "../type/graph.types";
+import { algorithmSelection, algorithmNeeds } from "../constant/common.constant.js";
 
 // Sinh ngẫu nhiên từ 0 - number
 export function randomFromZeroTo(number: number): number {
@@ -26,5 +28,36 @@ export function checkInput(matrix: Array<Array<number>>): boolean {
     for (let i = 0; i < matrix.length; i++)
         if (matrix[i].length !== columnAmount)
             return false;
+    return true;
+}
+
+export function checkParameters(G: GraphType, s: number, t: number, selectedAlgorithm: number): boolean {
+    const nodeCount: number = G.getNodeCount();
+    // Tập chỉ gồm các đỉnh
+    const vertices: Array<number> = G.getVertices();
+
+    // Chỉ kiểm tra thuật toán cần đỉnh bắt đầu
+    if (algorithmNeeds.includes(selectedAlgorithm)) {
+        if (isNaN(s) || s <= 0 || s > nodeCount) {
+            confirm("Đỉnh bắt đầu không hợp lệ!");
+            return false;
+        }
+        if (!vertices.includes(s)) {
+            confirm(`Đỉnh bắt đầu: ${s}: là chướng ngại vật => không hợp lệ`);
+            return false;
+        }
+    }
+
+    // Chỉ kiểm tra thuật toán cần đỉnh kết thúc
+    if (selectedAlgorithm === algorithmSelection.DIJKSTRA) {
+        if ((isNaN(t) || t <= 0 || t > nodeCount)) {
+            confirm("Đỉnh kết thúc không hợp lệ!");
+            return false;
+        }
+        if (!vertices.includes(t)) {
+            confirm(`Đỉnh kết thúc: ${t}: là chướng ngại vật => không hợp lệ`);
+            return false;
+        }
+    }
     return true;
 }
