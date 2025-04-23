@@ -1,7 +1,10 @@
-import { Point, UpdateSelectedCellUI } from "../type/common.types.js";
+import { Point, UpdateSelectedCellUI, HandleClickCell } from "../type/common.types.js";
 import { GraphType } from "../type/graph.types.js";
-import { turnOnDiv } from "../utils/ui.utils.js";
+import { turnOnDiv, turnOffDiv } from "../utils/ui.utils.js";
 import { getVertexFromPoint } from "../utils/calculate.utils.js";
+import { viewModeSelection } from "../constant/common.constant.js";
+import { drawGraph } from "../draw/draw.js";
+import { drawVisGraph } from "../vis/visGraph.js";
 
 // Xử lý khi chọn 1 ô
 export function handleClickOneCell(e: Event, G: GraphType, Pannel: any, updateSelectedCellUI: UpdateSelectedCellUI) {
@@ -24,4 +27,27 @@ export function handleClickOneCell(e: Event, G: GraphType, Pannel: any, updateSe
     Pannel.inforCell.innerHTML = `Ô <b style="color:red">${vertex}</b>, Tọa độ: (${point.i}, ${point.j})`;
 
     updateSelectedCellUI(cell, vertex, point);
+}
+
+// Xử lý khi chọn chế độ hiển thị ma trận
+export function handleClickViewModeButton(G: GraphType, selectedViewMode: number, MenuConfig: any, Algorithm: any, Pannel: any, handleClickCell: HandleClickCell) {
+    const m: number = G.getRowCount();
+    const n: number = G.getColumnCount();
+    switch (selectedViewMode) {
+        case viewModeSelection.WEIGHT_GRAPH:
+            turnOnDiv([MenuConfig.container, Algorithm.container]);
+            drawGraph(viewModeSelection.WEIGHT_GRAPH, m, n, G.getWeightMatrix(), handleClickCell);
+            break;
+        case viewModeSelection.VERTEX_GRAPH:
+            turnOnDiv([MenuConfig.container, Algorithm.container]);
+            drawGraph(viewModeSelection.VERTEX_GRAPH, m, n, G.getWeightMatrix(), handleClickCell);
+            break;
+        case viewModeSelection.DIRECTED_GRAPH:
+            turnOffDiv([MenuConfig.container, Pannel.container, Algorithm.container]);
+            drawVisGraph(G.getVertices(), G.getVertexMatrix());
+            break;
+        default:
+            confirm("Lỗi chức năng hiển thị chế độ xem!")
+            break;
+    }
 }

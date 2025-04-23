@@ -18,4 +18,5 @@ export interface GraphType {
     updateEdgesFromNode(u: number): void;
     updateEdgesToNode(u: number): void;
     removeEdgesOfNode(u: number): void;
+    getVertexMatrix(): Array<Array<number>>;
 }

@@ -1,6 +1,4 @@
 import Graph from "./Graph.js";
-import { drawGraph } from "./draw/draw.js";
-import { drawVisGraph } from "./vis/visGraph.js";
 import { Point } from "./type/common.types.js";
 import { CreateMatrix, ViewMode, Algorithm, Pannel, MenuConfig } from "./dom/domElements.js";
 import { methodOptions, speedOptions, viewModeOptions, algorithmOptions } from "./constant/options.constant.js";
@@ -9,7 +7,7 @@ import { turnOnSelectedCell, turnOffSelectedCell, turnOnDiv, turnOffDiv, turnOnI
 import { createMatrixFunc } from "./function/createMatrix.js";
 import { runAlgorithm } from "./function/runAlgorithm.js";
 import { updateWeight } from "./function/updateWeight.js";
-import { handleClickOneCell } from "./event/onclick.event.js";
+import { handleClickOneCell, handleClickViewModeButton } from "./event/onclick.event.js";
 
 var file: File | null = null;
 var G = new Graph();
@@ -125,25 +123,7 @@ ViewMode.selectTag.onchange = (e) => {
 }
 
 ViewMode.button.onclick = () => {
-    const m: number = G.getRowCount();
-    const n: number = G.getColumnCount();
-    switch (selectedViewMode) {
-        case viewModeSelection.WEIGHT_GRAPH:
-            turnOnDiv([MenuConfig.container, Algorithm.container]);
-            drawGraph(viewModeSelection.WEIGHT_GRAPH, m, n, G.getWeightMatrix(), handleClickCell);
-            break;
-        case viewModeSelection.VERTEX_GRAPH:
-            turnOnDiv([MenuConfig.container, Algorithm.container]);
-            drawGraph(viewModeSelection.VERTEX_GRAPH, m, n, G.getWeightMatrix(), handleClickCell);
-            break;
-        case viewModeSelection.DIRECTED_GRAPH:
-            turnOffDiv([MenuConfig.container, Pannel.container, Algorithm.container]);
-            drawVisGraph(G.getVertices(), G.getVertexMatrix());
-            break;
-        default:
-            confirm("Lỗi chức năng hiển thị chế độ xem!")
-            break;
-    }
+    handleClickViewModeButton(G, selectedViewMode, MenuConfig, Algorithm, Pannel, handleClickCell);
 }
 
 // USE CASE 6: CHỌN CHỨC NĂNG/ THUẬT TOÁN
