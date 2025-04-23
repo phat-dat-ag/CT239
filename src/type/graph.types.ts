@@ -14,4 +14,8 @@ export interface GraphType {
     getWeightAtCell(point: Point): number;
     getWeightMatrix(): Array<Array<number>>;
     buildGraph(matrix: Array<Array<number>>): void;
+    setWeightMatrixAt(point: Point, newWeight: number): void;
+    updateEdgesFromNode(u: number): void;
+    updateEdgesToNode(u: number): void;
+    removeEdgesOfNode(u: number): void;
 }
