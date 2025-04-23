@@ -3,7 +3,8 @@ import { GraphType } from "../type/graph.types.js";
 import { turnOnDiv } from "../utils/ui.utils.js";
 import { getVertexFromPoint } from "../utils/calculate.utils.js";
 
-export function handleClickOneCell(e: Event, G: GraphType, globalPoint: Point, Pannel: any, updateSelectedCellUI: UpdateSelectedCellUI) {
+// Xử lý khi chọn 1 ô
+export function handleClickOneCell(e: Event, G: GraphType, Pannel: any, updateSelectedCellUI: UpdateSelectedCellUI) {
     turnOnDiv([Pannel.container]);
     Pannel.inforCell.replaceChildren();
 

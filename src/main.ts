@@ -49,7 +49,7 @@ CreateMatrix.selectTag.onchange = (e: Event): void => {
 
 // Hỗ trợ sinh ma trận: Hàm sự kiện click chọn 1 ô
 function handleClickCell(e: Event): void {
-    handleClickOneCell(e, G, globalPoint, Pannel, (cell: HTMLSpanElement, vertex: number, point: Point) => {
+    handleClickOneCell(e, G, Pannel, (cell: HTMLSpanElement, vertex: number, point: Point) => {
         // Xóa màu ô được chọn trước đó
         if (selectedCell)
             turnOffSelectedCell(selectedCell);
@@ -154,6 +154,7 @@ Algorithm.selectTag.onchange = (e) => {
     selectedAlgorithm = parseInt(target.value);
 }
 
+// Tắt chọn Tốc độ/ Đỉnh kết thúc nếu đó khác thuật toán DIJKSTRA
 Algorithm.button.onclick = () => {
     if (selectedAlgorithm === algorithmSelection.DIJKSTRA)
         turnOnInputDiv(MenuConfig);
