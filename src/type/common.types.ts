@@ -1,5 +1,7 @@
 // Hàm xử lý sự kiện click 1 ô
 export type HandleClickCell = (e: MouseEvent) => void;
+// Hàm thay đổi giao diện cell khi click/ bỏ click
+export type UpdateSelectedCellUI = (cell: HTMLSpanElement, vertex: number, point: Point) => void;
 
 // Kích thước của ô, hàng, ma trận
 export interface Size {

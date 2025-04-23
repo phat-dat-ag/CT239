@@ -5,11 +5,11 @@ import { Point } from "./type/common.types.js";
 import { CreateMatrix, ViewMode, Algorithm, Pannel, MenuConfig } from "./dom/domElements.js";
 import { methodOptions, speedOptions, viewModeOptions, algorithmOptions } from "./constant/options.constant.js";
 import { quickSelection, viewModeSelection, algorithmSelection } from "./constant/common.constant.js";
-import { getVertexFromPoint } from "./utils/calculate.utils.js";
 import { turnOnSelectedCell, turnOffSelectedCell, turnOnDiv, turnOffDiv, turnOnInputDiv, turnOffInputDiv, createSelectTag, createFileGroup } from "./utils/ui.utils.js";
 import { createMatrixFunc } from "./function/createMatrix.js";
 import { runAlgorithm } from "./function/runAlgorithm.js";
 import { updateWeight } from "./function/updateWeight.js";
+import { handleClickOneCell } from "./event/onclick.event.js";
 
 var file: File | null = null;
 var G = new Graph();
@@ -48,39 +48,24 @@ CreateMatrix.selectTag.onchange = (e: Event): void => {
 }
 
 // Hỗ trợ sinh ma trận: Hàm sự kiện click chọn 1 ô
-function handleClickCell(e: Event) {
-    turnOnDiv([Pannel.container]);
-    Pannel.inforCell.replaceChildren();
+function handleClickCell(e: Event): void {
+    handleClickOneCell(e, G, globalPoint, Pannel, (cell: HTMLSpanElement, vertex: number, point: Point) => {
+        // Xóa màu ô được chọn trước đó
+        if (selectedCell)
+            turnOffSelectedCell(selectedCell);
+        // Gắn ô hiện tại lên global
+        selectedCell = cell;
+        globalPoint = { ...point };
+        // Đánh dấu ô đang chọn
+        turnOnSelectedCell(selectedCell);
 
-    const target = e.target as HTMLSpanElement;
-    const cell: HTMLSpanElement = document.getElementById(target.id) as HTMLSpanElement;
-
-    // cell được chọn trước đó => xóa màu
-    if (selectedCell)
-        turnOffSelectedCell(selectedCell);
-
-    // Gắn cell hiện tại lên global
-    selectedCell = cell;
-    turnOnSelectedCell(selectedCell);
-
-    // Lấy tọa độ từ id đã đặt trước đó
-    let [i, j]: Array<string> = cell.id.split("_");
-    globalPoint = {
-        i: parseInt(i),
-        j: parseInt(j)
-    }
-
-    Pannel.weightInput.value = `${G.getWeightAtCell(globalPoint)}`;
-    const n: number = G.getColumnCount();
-    const vertex: number = getVertexFromPoint(globalPoint, n);
-    Pannel.inforCell.innerHTML = `Ô <b style="color:red">${vertex}</b>, Tọa độ: (${globalPoint.i}, ${globalPoint.j})`;
-
-    if (activatedOnCell === quickSelection.START)
-        MenuConfig.startInput.value = `${vertex}`;
-    if (activatedOnCell === quickSelection.END)
-        MenuConfig.endInput.value = `${vertex}`;
-    // Trả lại: chỉ cho phép chọn đỉnh bắt đầu/ kết thúc 1 lần thôi
-    activatedOnCell = quickSelection.NO_CHOICE;
+        if (activatedOnCell === quickSelection.START)
+            MenuConfig.startInput.value = `${vertex}`;
+        if (activatedOnCell === quickSelection.END)
+            MenuConfig.endInput.value = `${vertex}`;
+        // Trả lại: chỉ cho phép chọn đỉnh bắt đầu/ kết thúc 1 lần thôi
+        activatedOnCell = quickSelection.NO_CHOICE;
+    });
 }
 
 // Sinh ra ma trận
