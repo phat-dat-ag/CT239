@@ -17,9 +17,9 @@ export const speedOptions: Array<Option> = [
 
 // Chế độ xem
 export const viewModeOptions: Array<Option> = [
-    { value: "weight", title: "Ma trận với trọng số" },
-    { value: "vertex", title: "Ma trận số thứ tự đỉnh" },
-    { value: "graph", title: "Đồ thị minh họa" }
+    { value: 1, title: "Ma trận với trọng số" },
+    { value: 2, title: "Ma trận số thứ tự đỉnh" },
+    { value: 3, title: "Đồ thị minh họa" }
 ];
 
 // Thuật toán

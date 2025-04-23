@@ -86,14 +86,7 @@ createSelectTag(viewModeOptions, ViewMode.selectTag);
 
 ViewMode.selectTag.onchange = (e: Event) => {
     const target: HTMLSelectElement = e.target as HTMLSelectElement;
-    if (target.value === "weight")
-        selectedViewMode = viewModeSelection.WEIGHT_GRAPH;
-    else if (target.value === "graph")
-        selectedViewMode = viewModeSelection.DIRECTED_GRAPH;
-    else if (target.value === "vertex")
-        selectedViewMode = viewModeSelection.VERTEX_GRAPH;
-    else
-        confirm("Lỗi chức năng chọn chế độ xem rồi!");
+    selectedViewMode = parseInt(target.value);
 }
 
 ViewMode.button.onclick = () => {
