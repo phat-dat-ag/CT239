@@ -3,11 +3,12 @@ import { Point } from "./type/common.types.js";
 import { CreateMatrix, ViewMode, Algorithm, Pannel, MenuConfig } from "./dom/domElements.js";
 import { methodOptions, speedOptions, viewModeOptions, algorithmOptions } from "./constant/options.constant.js";
 import { quickSelection, viewModeSelection, algorithmSelection } from "./constant/common.constant.js";
-import { turnOnSelectedCell, turnOffSelectedCell, createSelectTag, createFileGroup } from "./utils/ui.utils.js";
+import { turnOnSelectedCell, turnOffSelectedCell, createSelectTag } from "./utils/ui.utils.js";
 import { createMatrixFunc } from "./function/createMatrix.js";
 import { runAlgorithm } from "./function/runAlgorithm.js";
 import { updateWeight } from "./function/updateWeight.js";
 import { handleClickOneCell, handleClickViewModeButton, handleClickAlgorithmButton, handleClickExitButton } from "./event/onclick.event.js";
+import { handleOptionChange, handleCreateMatrixMethodChange } from "./event/onchange.event.js";
 
 var file: File | null = null;
 var G = new Graph();
@@ -27,22 +28,15 @@ var selectedAlgorithm: number = algorithmSelection.DIJKSTRA;
 createSelectTag(methodOptions, CreateMatrix.selectTag);
 
 CreateMatrix.selectTag.onchange = (e: Event): void => {
-    CreateMatrix.fileInput.replaceChildren();
-    const target = e.target as HTMLSelectElement;
-    const methodID = parseInt(target.value);
-
-    if (methodID === 0) file = null;
-    else {
-        // Dùng Callback tại đây: truyền vào 1 hàm như tham số
-        // Anonymous function: hàm ẩn danh
-        // Khai báo ngay tại chỗ truyền vào như 1 tham số
-        // Tuy không khai báo như bth, nhưng nó vẫn là hàm, và được gọi như bình thường
-        // Có thể tách ra cho rõ
-        const fileGroup: HTMLDivElement = createFileGroup((selectedFile: File) => {
-            file = selectedFile;
-        });
-        CreateMatrix.fileInput.appendChild(fileGroup);
-    }
+    // Có dùng callback lồng trong callback: hàm setFile
+    // Dùng Callback tại đây: truyền vào 1 hàm như tham số
+    // Anonymous function: hàm ẩn danh
+    // Khai báo ngay tại chỗ truyền vào như 1 tham số
+    // Tuy không khai báo như bth, nhưng nó vẫn là hàm, và được gọi như bình thường
+    // Có thể tách ra cho rõ
+    handleCreateMatrixMethodChange(e, CreateMatrix, (selectedFile: File | null) => {
+        file = selectedFile;
+    });
 }
 
 // Hỗ trợ sinh ma trận: Hàm sự kiện click chọn 1 ô
@@ -85,8 +79,7 @@ Pannel.exitButton.onclick = () => {
 createSelectTag(viewModeOptions, ViewMode.selectTag);
 
 ViewMode.selectTag.onchange = (e: Event) => {
-    const target: HTMLSelectElement = e.target as HTMLSelectElement;
-    selectedViewMode = parseInt(target.value);
+    selectedViewMode = handleOptionChange(e);
 }
 
 ViewMode.button.onclick = () => {
@@ -97,8 +90,7 @@ ViewMode.button.onclick = () => {
 createSelectTag(algorithmOptions, Algorithm.selectTag);
 
 Algorithm.selectTag.onchange = (e: Event) => {
-    const target: HTMLSelectElement = e.target as HTMLSelectElement;
-    selectedAlgorithm = parseInt(target.value);
+    selectedAlgorithm = handleOptionChange(e);
 }
 
 Algorithm.button.onclick = () => {
@@ -121,8 +113,7 @@ var ms: number = 3000;
 createSelectTag(speedOptions, MenuConfig.speedSelectTag);
 
 MenuConfig.speedSelectTag.onchange = (e: Event): void => {
-    const target: HTMLSelectElement = e.target as HTMLSelectElement;
-    ms = parseInt(target.value);
+    ms = handleOptionChange(e);
 }
 
 var s: number | null = null, t: number | null = null;
