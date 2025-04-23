@@ -55,3 +55,30 @@ export function createSelectTag(options: Array<Option>, selectTag: HTMLSelectEle
         selectTag.appendChild(optionTag);
     }
 }
+
+// Tạo vùng nhập file
+// Callback
+// onFileSelected: (f: File) => void
+// onFileSelected như là một tham số
+// (f: File) => void chính là kiểu DL của nó (nó đặc biệt: kiểu function)
+// Kiểu dữ liệu của nó là 1 hàm nhận f là tham số, và không trả về
+export function createFileGroup(onFileSelected: (f: File) => void): HTMLDivElement {
+    const fileGroup: HTMLDivElement = document.createElement("div");
+
+    const input: HTMLInputElement = document.createElement("input");
+    input.id = "file-input";
+    input.type = "file";
+    input.accept = ".txt";
+
+    fileGroup.classList.add("field-group");
+    fileGroup.appendChild(input);
+    // Sự kiện thay đổi file
+    input.onchange = (e: Event): void => {
+        const target: HTMLInputElement = e.target as HTMLInputElement;
+        if (target.files && target.files.length > 0)
+            // Dù ở main.ts nó là anonymous function nhưng nó vẫn là hàm chính thức, như những hàm khác
+            onFileSelected(target.files[0]);  // Gọi callback, truyền file đã chọn
+    }
+
+    return fileGroup;
+}

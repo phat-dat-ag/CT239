@@ -6,7 +6,7 @@ import { CreateMatrix, ViewMode, Algorithm, Pannel, MenuConfig } from "./dom/dom
 import { methodOptions, speedOptions, viewModeOptions, algorithmOptions } from "./constant/options.constant.js";
 import { quickSelection, viewModeSelection, algorithmSelection } from "./constant/common.constant.js";
 import { getVertexFromPoint } from "./utils/calculate.utils.js";
-import { turnOnSelectedCell, turnOffSelectedCell, turnOnDiv, turnOffDiv, turnOnInputDiv, turnOffInputDiv, createSelectTag } from "./utils/ui.utils.js";
+import { turnOnSelectedCell, turnOffSelectedCell, turnOnDiv, turnOffDiv, turnOnInputDiv, turnOffInputDiv, createSelectTag, createFileGroup } from "./utils/ui.utils.js";
 import { createMatrixFunc } from "./function/createMatrix.js";
 import { runAlgorithm } from "./function/runAlgorithm.js";
 import { updateWeight } from "./function/updateWeight.js";
@@ -34,21 +34,15 @@ CreateMatrix.selectTag.onchange = (e: Event): void => {
     const methodID = parseInt(target.value);
 
     if (methodID === 0) file = null;
-    else if (methodID === 1) {
-        const input: HTMLInputElement = document.createElement("input");
-        input.id = "file-input"
-        input.type = "file";
-        input.accept = ".txt";
-
-        const fileGroup: HTMLDivElement = document.createElement("div");
-        fileGroup.classList.add("field-group");
-        fileGroup.appendChild(input);
-        // Sự kiện thay đổi file
-        input.onchange = (e: Event): void => {
-            const target: HTMLInputElement = e.target as HTMLInputElement;
-            if (target.files && target.files.length > 0)
-                file = target.files[0];
-        }
+    else {
+        // Dùng Callback tại đây: truyền vào 1 hàm như tham số
+        // Anonymous function: hàm ẩn danh
+        // Khai báo ngay tại chỗ truyền vào như 1 tham số
+        // Tuy không khai báo như bth, nhưng nó vẫn là hàm, và được gọi như bình thường
+        // Có thể tách ra cho rõ
+        const fileGroup: HTMLDivElement = createFileGroup((selectedFile: File) => {
+            file = selectedFile;
+        });
         CreateMatrix.fileInput.appendChild(fileGroup);
     }
 }
