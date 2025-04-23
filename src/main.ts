@@ -71,42 +71,17 @@ CreateMatrix.button.onclick = async () => {
     await createMatrixFunc(file, G, s, t, Pannel, MenuConfig, ViewMode, Algorithm, handleClickCell);
 }
 
-// USE CASE 2: TÙY CHỌN TỐC ĐỘ MINH HỌA GIẢI THUẬT
-var ms: number = 3000;
-createSelectTag(speedOptions, MenuConfig.speedSelectTag);
-
-MenuConfig.speedSelectTag.onchange = (e: Event): void => {
-    const target: HTMLSelectElement = e.target as HTMLSelectElement;
-    ms = parseInt(target.value);
-}
-
-var s: number | null = null, t: number | null = null;
-// Thực thi giải thuật được chọn
-MenuConfig.runButton.onclick = async () => {
-    await runAlgorithm(G, s, t, ms, selectedAlgorithm, selectedCell);
-}
-
-// USE CASE 3: CẬP NHẬT TRỌNG SỐ TRÊN GIAO DIỆN
+// USE CASE 2: CẬP NHẬT TRỌNG SỐ TRÊN GIAO DIỆN
 Pannel.updateButton.onclick = () => {
     updateWeight(globalPoint, G, Pannel);
 }
 
-// Chọn đỉnh bắt đầu thay vì nhập
-MenuConfig.startClick.onclick = function () {
-    activatedOnCell = quickSelection.START;
-}
-
-// Chọn đỉnh kết thúc thay vì nhập
-MenuConfig.endClick.onclick = function () {
-    activatedOnCell = quickSelection.END;
-}
-
-// USE CASE 4: ĐÓNG GIAO DIỆN CẬP NHẬT TRỌNG SỐ
+// USE CASE 3: ĐÓNG GIAO DIỆN CẬP NHẬT TRỌNG SỐ
 Pannel.exitButton.onclick = () => {
     handleClickExitButton(Pannel, selectedCell);
 }
 
-// USE CASE 5: CHỌN CHẾ ĐỘ XEM
+// USE CASE 4: CHỌN CHẾ ĐỘ XEM
 createSelectTag(viewModeOptions, ViewMode.selectTag);
 
 ViewMode.selectTag.onchange = (e: Event) => {
@@ -125,7 +100,7 @@ ViewMode.button.onclick = () => {
     handleClickViewModeButton(G, selectedViewMode, MenuConfig, Algorithm, Pannel, handleClickCell);
 }
 
-// USE CASE 6: CHỌN CHỨC NĂNG/ THUẬT TOÁN
+// USE CASE 5: CHỌN CHỨC NĂNG/ THUẬT TOÁN
 createSelectTag(algorithmOptions, Algorithm.selectTag);
 
 Algorithm.selectTag.onchange = (e: Event) => {
@@ -135,4 +110,31 @@ Algorithm.selectTag.onchange = (e: Event) => {
 
 Algorithm.button.onclick = () => {
     handleClickAlgorithmButton(selectedAlgorithm, MenuConfig);
+}
+
+// USE CASE 6: NHẬP DỮ LIỆU CHO GIẢI THUẬT VÀ THỰC THI
+
+// Chọn đỉnh bắt đầu thay vì nhập
+MenuConfig.startClick.onclick = function () {
+    activatedOnCell = quickSelection.START;
+}
+
+// Chọn đỉnh kết thúc thay vì nhập
+MenuConfig.endClick.onclick = function () {
+    activatedOnCell = quickSelection.END;
+}
+
+var ms: number = 3000;
+createSelectTag(speedOptions, MenuConfig.speedSelectTag);
+
+MenuConfig.speedSelectTag.onchange = (e: Event): void => {
+    const target: HTMLSelectElement = e.target as HTMLSelectElement;
+    ms = parseInt(target.value);
+}
+
+var s: number | null = null, t: number | null = null;
+
+// Thực thi giải thuật được chọn
+MenuConfig.runButton.onclick = async () => {
+    await runAlgorithm(G, s, t, ms, selectedAlgorithm, selectedCell);
 }
