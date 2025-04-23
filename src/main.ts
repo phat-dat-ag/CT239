@@ -3,11 +3,11 @@ import { Point } from "./type/common.types.js";
 import { CreateMatrix, ViewMode, Algorithm, Pannel, MenuConfig } from "./dom/domElements.js";
 import { methodOptions, speedOptions, viewModeOptions, algorithmOptions } from "./constant/options.constant.js";
 import { quickSelection, viewModeSelection, algorithmSelection } from "./constant/common.constant.js";
-import { turnOnSelectedCell, turnOffSelectedCell, turnOnDiv, turnOffDiv, turnOnInputDiv, turnOffInputDiv, createSelectTag, createFileGroup } from "./utils/ui.utils.js";
+import { turnOnSelectedCell, turnOffSelectedCell, turnOffDiv, createSelectTag, createFileGroup } from "./utils/ui.utils.js";
 import { createMatrixFunc } from "./function/createMatrix.js";
 import { runAlgorithm } from "./function/runAlgorithm.js";
 import { updateWeight } from "./function/updateWeight.js";
-import { handleClickOneCell, handleClickViewModeButton } from "./event/onclick.event.js";
+import { handleClickOneCell, handleClickViewModeButton, handleClickAlgorithmButton } from "./event/onclick.event.js";
 
 var file: File | null = null;
 var G = new Graph();
@@ -134,10 +134,6 @@ Algorithm.selectTag.onchange = (e) => {
     selectedAlgorithm = parseInt(target.value);
 }
 
-// Tắt chọn Tốc độ/ Đỉnh kết thúc nếu đó khác thuật toán DIJKSTRA
 Algorithm.button.onclick = () => {
-    if (selectedAlgorithm === algorithmSelection.DIJKSTRA)
-        turnOnInputDiv(MenuConfig);
-    else
-        turnOffInputDiv(MenuConfig);
+    handleClickAlgorithmButton(selectedAlgorithm, MenuConfig);
 }

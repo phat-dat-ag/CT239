@@ -1,8 +1,8 @@
 import { Point, UpdateSelectedCellUI, HandleClickCell } from "../type/common.types.js";
 import { GraphType } from "../type/graph.types.js";
-import { turnOnDiv, turnOffDiv } from "../utils/ui.utils.js";
+import { turnOnDiv, turnOffDiv, turnOnInputDiv, turnOffInputDiv } from "../utils/ui.utils.js";
 import { getVertexFromPoint } from "../utils/calculate.utils.js";
-import { viewModeSelection } from "../constant/common.constant.js";
+import { viewModeSelection, algorithmSelection } from "../constant/common.constant.js";
 import { drawGraph } from "../draw/draw.js";
 import { drawVisGraph } from "../vis/visGraph.js";
 
@@ -51,3 +51,11 @@ export function handleClickViewModeButton(G: GraphType, selectedViewMode: number
             break;
     }
 }
+
+// Tắt chọn Tốc độ/ Đỉnh kết thúc nếu đó khác thuật toán DIJKSTRA
+export function handleClickAlgorithmButton(selectedAlgorithm: number, MenuConfig: any) {
+    if (selectedAlgorithm === algorithmSelection.DIJKSTRA)
+        turnOnInputDiv(MenuConfig);
+    else
+        turnOffInputDiv(MenuConfig);
+} 
