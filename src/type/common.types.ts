@@ -1,3 +1,6 @@
+// Hàm xử lý sự kiện click 1 ô
+export type HandleClickCell = (e: MouseEvent) => void;
+
 // Kích thước của ô, hàng, ma trận
 export interface Size {
     height: number;
@@ -20,10 +23,7 @@ export interface Point {
 
 // Các thuộc tính của thẻ Option- Select trong DOM
 export interface Option {
-    methodID?: string;
-    speed?: number;
-    viewMode?: string;
-    algorithmID?: number;
+    value: number | string,
     title: string;
 }
 

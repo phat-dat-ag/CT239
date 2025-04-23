@@ -1,16 +1,14 @@
 import Graph from "./Graph.js";
 import { drawGraph } from "./draw/draw.js";
 import { drawVisGraph } from "./vis/visGraph.js";
-import Dijkstra from "./algorithm/Dijkstra.js";
-import ChuLiu from "./algorithm/ChuLiuEdmonds.js";
-import Tree_TSP from "./algorithm/TSP.js";
-import { All_Tree_DFS, Tree_DFS } from "./algorithm/TreeDFS.js";
-import { All_Tree_BFS, Tree_BFS } from "./algorithm/TreeBFS.js";
-import { All_Tree_Recursion, Tree_Recursion } from "./algorithm/TreeRecursion.js";
 import { Point } from "./type/common.types.js";
-import { CreateMatrix, ViewMode, Algorithm, Pannel, MenuConfig, block_2 } from "./dom/domElements.js";
+import { CreateMatrix, ViewMode, Algorithm, Pannel, MenuConfig } from "./dom/domElements.js";
 import { methodOptions, speedOptions, viewModeOptions, algorithmOptions } from "./constant/options.constant.js";
-import { quickSelection, viewModeSelection, algorithmSelection, algorithmNeeds } from "./constant/common.constant.js";
+import { quickSelection, viewModeSelection, algorithmSelection } from "./constant/common.constant.js";
+import { getVertexFromPoint } from "./utils/calculate.utils.js";
+import { turnOnSelectedCell, turnOffSelectedCell, turnOnDiv, turnOffDiv, turnOnInputDiv, turnOffInputDiv, createSelectTag } from "./utils/ui.utils.js";
+import { createMatrixFunc } from "./function/createMatrix.js";
+import { runAlgorithm } from "./function/runAlgorithm.js";
 
 var file: File | null = null;
 var G = new Graph();
@@ -23,50 +21,12 @@ var activatedOnCell: number = quickSelection.NO_CHOICE;
 // Chọn cách hiển thị ma trận
 var selectedViewMode: number = viewModeSelection.WEIGHT_GRAPH;
 
-// Chọn thuật toan
+// Chọn thuật toán
 var selectedAlgorithm: number = algorithmSelection.DIJKSTRA;
 
-// Hiển thị thẻ div đã bị ẩn lên
-function turnOnDiv(divs: Array<HTMLDivElement>) {
-    for (let div of divs) {
-        div.classList.add("turn-on");
-        div.classList.remove("hide-div");
-    }
-}
-
-// Ẩn thẻ div đang được hiển thị
-function turnOffDiv(divs: Array<HTMLDivElement>) {
-    for (let div of divs) {
-        div.classList.remove("turn-on");
-        div.classList.add("hide-div");
-    }
-}
-
-function randomFromZeroTo(number: number): number {
-    if (number <= 0)
-        return 0;
-    return Math.round(Math.random() * number);
-};
-
-function getVertexFromPoint(point: Point, n: number): number {
-    return point.i * n + (point.j + 1);
-}
-
-function checkInput(matrix: Array<Array<number>>): boolean {
-    const columnAmount: number = matrix[0].length;
-    for (let i = 0; i < matrix.length; i++)
-        if (matrix[i].length !== columnAmount)
-            return false;
-    return true;
-}
-
 // USE CASE 1: TÙY CHỌN CÁCH SINH RA MA TRẬN
-for (let method of methodOptions) {
-    const op: HTMLOptionElement = document.createElement("option") as HTMLOptionElement;
-    op.value = `${method.methodID}`;
-    op.innerText = method.title;
-    CreateMatrix.selectTag.appendChild(op);
-}
+createSelectTag(methodOptions, CreateMatrix.selectTag);
+
 CreateMatrix.selectTag.onchange = (e: Event): void => {
     CreateMatrix.fileInput.replaceChildren();
     const target = e.target as HTMLSelectElement;
@@ -92,17 +52,8 @@ CreateMatrix.selectTag.onchange = (e: Event): void => {
     }
 }
 
-function turnOnSelectedCell() {
-    selectedCell.classList.add("selected-cell");
-}
-
-function turnOffSelectedCell() {
-    selectedCell.classList.remove("selected-cell");
-}
-
 // Hỗ trợ sinh ma trận: Hàm sự kiện click chọn 1 ô
-function handleClickCell(e: Event): void {
-    // Bật pannel lên
+function handleClickCell(e: Event) {
     turnOnDiv([Pannel.container]);
     Pannel.inforCell.replaceChildren();
 
@@ -111,11 +62,11 @@ function handleClickCell(e: Event): void {
 
     // cell được chọn trước đó => xóa màu
     if (selectedCell)
-        turnOffSelectedCell();
+        turnOffSelectedCell(selectedCell);
 
     // Gắn cell hiện tại lên global
     selectedCell = cell;
-    turnOnSelectedCell();
+    turnOnSelectedCell(selectedCell);
 
     // Lấy tọa độ từ id đã đặt trước đó
     let [i, j]: Array<string> = cell.id.split("_");
@@ -137,85 +88,15 @@ function handleClickCell(e: Event): void {
     activatedOnCell = quickSelection.NO_CHOICE;
 }
 
-// Hỗ trợ sinh ma trận: Hàm đọc file
-function readFileAsText(file: File): Promise<string> {
-    const reader = new FileReader();
-    return new Promise((resolve, reject) => {
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = () => reject("Có lỗi khi đọc file");
-
-        reader.readAsText(file);
-    });
-}
-
 // Sinh ra ma trận
-CreateMatrix.button.onclick = async function (): Promise<void> {
-    // Tắt pannel mỗi khi random lại
-    turnOffDiv([Pannel.container]);
-    let matrix: Array<Array<number>> = [];
-
-    if (file) {
-        try {
-            const content: string = await readFileAsText(file);
-            // Tách thành danh sách các dòng
-            const rows: Array<string> = content.split("\n");
-            let stringArray: Array<string>;
-            for (let row of rows) {
-                let rowOfMatrix: Array<number> = [];
-                stringArray = row.split(" ");
-                for (let str of stringArray)
-                    rowOfMatrix.push(parseInt(str));
-                matrix.push(rowOfMatrix);
-            }
-        } catch (err) {
-            console.log("Lỗi đọc file: ", err);
-        }
-    } else {
-        const rowCount: number = randomFromZeroTo(3) + 5;
-        const columnCount: number = randomFromZeroTo(3) + 5;
-        for (let i = 0; i < rowCount; i++) {
-            let row: Array<number> = [];
-            for (let j = 0; j < columnCount; j++) {
-                // Random dấu trước: xác suất 20% dấu âm
-                const sign: number = (randomFromZeroTo(10) <= 2) ? -1 : 1;
-                // Phạm vi -99<=...<=99
-                row.push(sign * randomFromZeroTo(99));
-            }
-            matrix.push(row);
-        }
-    }
-    if (checkInput(matrix)) {
-        // Class Graph chính thức được tạo
-        G.buildGraph(matrix);
-        const m: number = G.getRowCount();
-        const n: number = G.getColumnCount();
-        const weightMatrix: Array<Array<number>> = G.getWeightMatrix();
-        drawGraph(viewModeSelection.WEIGHT_GRAPH, m, n, weightMatrix, handleClickCell);
-        // Đặt lại s và t
-        s = 0;
-        t = 0;
-        // Đặt max và value cho start/ end vertex input
-        MenuConfig.startInput.max = `${G.getNodeCount()}`;
-        MenuConfig.startInput.value = `${s}`;
-        MenuConfig.endInput.max = `${G.getNodeCount()}`;
-        MenuConfig.endInput.value = `${t}`;
-        // Bật Menu tùy chỉnh lên
-        // Bật chức năng chọn chế độ xem lên
-        // Bật chức năng chọn thuật toán lên
-        turnOnDiv([MenuConfig.container, ViewMode.container, Algorithm.container]);
-    } else {
-        confirm("Ma trận không hợp lệ");
-    }
+CreateMatrix.button.onclick = async () => {
+    await createMatrixFunc(file, G, s, t, Pannel, MenuConfig, ViewMode, Algorithm, handleClickCell);
 }
 
 // USE CASE 2: TÙY CHỌN TỐC ĐỘ MINH HỌA GIẢI THUẬT
 var ms: number = 3000;
-for (let option of speedOptions) {
-    const op: HTMLOptionElement = document.createElement("option");
-    op.value = `${option.speed}`;
-    op.innerText = option.title;
-    MenuConfig.speedSelectTag.appendChild(op);
-}
+createSelectTag(speedOptions, MenuConfig.speedSelectTag);
+
 MenuConfig.speedSelectTag.onchange = (e: Event): void => {
     const target: HTMLSelectElement = e.target as HTMLSelectElement;
     ms = parseInt(target.value);
@@ -223,55 +104,8 @@ MenuConfig.speedSelectTag.onchange = (e: Event): void => {
 
 var s: number | null = null, t: number | null = null;
 // Thực thi giải thuật được chọn
-MenuConfig.runButton.onclick = async (): Promise<void> => {
-    // Xóa phần trình bày trước đó của thuật toán Moore Dijkstra
-    block_2.replaceChildren();
-    const nodeCount: number = G.getNodeCount();
-    s = parseInt(MenuConfig.startInput.value);
-    for (let algo of algorithmNeeds)
-        if (selectedAlgorithm === algo)
-            if (isNaN(s) || s <= 0 || s > nodeCount) {
-                confirm("Đỉnh bắt đầu không hợp lệ!");
-                return;
-            }
-    t = parseInt(MenuConfig.endInput.value);
-    if (selectedAlgorithm === algorithmSelection.DIJKSTRA && (isNaN(t) || t <= 0 || t > nodeCount)) {
-        confirm("Đỉnh kết thúc không hợp lệ!");
-        return;
-    }
-
-    switch (selectedAlgorithm) {
-        case algorithmSelection.DIJKSTRA:
-            turnOffSelectedCell();
-            await Dijkstra(G, s, t, ms);
-            break;
-        case algorithmSelection.SPANNING:
-            ChuLiu(G, s);
-            break;
-        case algorithmSelection.TSP:
-            Tree_TSP(G, s);
-            break;
-        case algorithmSelection.DFS:
-            Tree_DFS(G, s);
-            break;
-        case algorithmSelection.BFS:
-            Tree_BFS(G, s);
-            break;
-        case algorithmSelection.RECURSION:
-            Tree_Recursion(G, s);
-            break;
-        case algorithmSelection.DFS_ALL:
-            All_Tree_DFS(G);
-            break;
-        case algorithmSelection.BFS_ALL:
-            All_Tree_BFS(G);
-            break;
-        case algorithmSelection.RECURSION_ALL:
-            All_Tree_Recursion(G);
-            break;
-        default:
-            confirm("Chưa hỗ trợ các chức năng còn lại");
-    }
+MenuConfig.runButton.onclick = async () => {
+    await runAlgorithm(G, s, t, ms, selectedAlgorithm, selectedCell);
 }
 
 // USE CASE 3: CẬP NHẬT TRỌNG SỐ TRÊN GIAO DIỆN
@@ -374,16 +208,11 @@ MenuConfig.endClick.onclick = function () {
 // USE CASE 4: ĐÓNG GIAO DIỆN CẬP NHẬT TRỌNG SỐ
 Pannel.exitButton.onclick = (e: Event): void => {
     turnOffDiv([Pannel.container]);
-    turnOffSelectedCell();
+    turnOffSelectedCell(selectedCell);
 }
 
 // USE CASE 5: CHỌN CHẾ ĐỘ XEM
-for (let option of viewModeOptions) {
-    const op: HTMLOptionElement = document.createElement("option") as HTMLOptionElement;
-    op.value = `${option.viewMode}`;
-    op.innerText = `${option.title}`;
-    ViewMode.selectTag.appendChild(op);
-}
+createSelectTag(viewModeOptions, ViewMode.selectTag);
 
 ViewMode.selectTag.onchange = (e) => {
     const target: HTMLSelectElement = e.target as HTMLSelectElement;
@@ -420,35 +249,16 @@ ViewMode.button.onclick = () => {
 }
 
 // USE CASE 6: CHỌN CHỨC NĂNG/ THUẬT TOÁN
-for (let option of algorithmOptions) {
-    const op: HTMLOptionElement = document.createElement("option") as HTMLOptionElement;
-    op.value = `${option.algorithmID}`;
-    op.innerText = `${option.title}`;
-    Algorithm.selectTag.appendChild(op);
-}
+createSelectTag(algorithmOptions, Algorithm.selectTag);
 
 Algorithm.selectTag.onchange = (e) => {
     const target: HTMLSelectElement = e.target as HTMLSelectElement;
     selectedAlgorithm = parseInt(target.value);
 }
 
-function turnOffInputDiv() {
-    MenuConfig.speedGroup.classList.remove("field-group");
-    MenuConfig.speedGroup.classList.add("hide-div");
-    MenuConfig.endGroup.classList.remove("field-group");
-    MenuConfig.endGroup.classList.add("hide-div");
-}
-
-function turnOnInputDiv() {
-    MenuConfig.speedGroup.classList.add("field-group");
-    MenuConfig.speedGroup.classList.remove("hide-div");
-    MenuConfig.endGroup.classList.add("field-group");
-    MenuConfig.endGroup.classList.remove("hide-div");
-}
-
 Algorithm.button.onclick = () => {
     if (selectedAlgorithm === algorithmSelection.DIJKSTRA)
-        turnOnInputDiv();
+        turnOnInputDiv(MenuConfig);
     else
-        turnOffInputDiv();
+        turnOffInputDiv(MenuConfig);
 }

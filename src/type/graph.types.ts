@@ -1,4 +1,5 @@
 import Graph_EdgeList from "../Graph_EdgeList.js";
+import { Point } from "./common.types.js";
 
 // Đồ thị: Đỉnh- Đỉnh
 export interface GraphType {
@@ -10,4 +11,7 @@ export interface GraphType {
     getRowCount(): number;
     getColumnCount(): number;
     getWeightOfEdge(u: number, v: number): number;
+    getWeightAtCell(point: Point): number;
+    getWeightMatrix(): Array<Array<number>>;
+    buildGraph(matrix: Array<Array<number>>): void;
 }

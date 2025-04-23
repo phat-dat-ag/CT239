@@ -1,17 +1,7 @@
 import Graph_EdgeList from "./Graph_EdgeList.js";
 import { Point } from "./type/common.types.js";
 import { NO_EDGE, directions } from "./constant/common.constant.js";
-
-function getVertexFromPoint(point: Point, n: number): number {
-    return point.i * n + (point.j + 1);
-}
-
-function getPointFromVertex(u: number, n: number): Point {
-    return {
-        i: Math.floor((u - 1) / n),
-        j: (u - 1) % n
-    }
-}
+import { getPointFromVertex, getVertexFromPoint } from "./utils/calculate.utils.js";
 
 export default class Graph {
     private weightMatrix: Array<Array<number>>;

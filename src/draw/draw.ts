@@ -1,8 +1,8 @@
-import { Size, Infor, Point } from "../type/common.types.js";
+import { Size, Infor, Point, HandleClickCell } from "../type/common.types.js";
 import { Container } from "../dom/domElements.js";
 import { inforSelection } from "../constant/common.constant.js";
-
-type HandleClickCell = (e: MouseEvent) => void;
+import { getPointFromVertex } from "../utils/calculate.utils.js";
+import { delay } from "../utils/ui.utils.js";
 
 // Tạo một hàng bằng DOM
 function drawRow(idRow: number, rowSize: Size): HTMLDivElement {
@@ -88,17 +88,6 @@ export function drawGraph(viewMode: number, m: number, n: number, weightMatrix: 
         }
         Container.appendChild(row);
     }
-}
-
-function getPointFromVertex(u: number, n: number): Point {
-    return {
-        i: Math.floor((u - 1) / n),
-        j: (u - 1) % n
-    }
-}
-
-function delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Tô màu cho đường đi tới
