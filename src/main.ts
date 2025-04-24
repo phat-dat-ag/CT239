@@ -41,7 +41,7 @@ CreateMatrix.selectTag.onchange = (e: Event): void => {
 
 // Hỗ trợ sinh ma trận: Hàm sự kiện click chọn 1 ô
 function handleClickCell(e: Event): void {
-    handleClickOneCell(e, G, Pannel, (cell: HTMLSpanElement, vertex: number, point: Point) => {
+    handleClickOneCell(activatedOnCell, MenuConfig, e, G, Pannel, (cell: HTMLSpanElement, point: Point) => {
         // Xóa màu ô được chọn trước đó
         if (selectedCell)
             turnOffSelectedCell(selectedCell);
@@ -50,11 +50,6 @@ function handleClickCell(e: Event): void {
         globalPoint = { ...point };
         // Đánh dấu ô đang chọn
         turnOnSelectedCell(selectedCell);
-
-        if (activatedOnCell === quickSelection.START)
-            MenuConfig.startInput.value = `${vertex}`;
-        if (activatedOnCell === quickSelection.END)
-            MenuConfig.endInput.value = `${vertex}`;
         // Trả lại: chỉ cho phép chọn đỉnh bắt đầu/ kết thúc 1 lần thôi
         activatedOnCell = quickSelection.NO_CHOICE;
     });
@@ -62,7 +57,11 @@ function handleClickCell(e: Event): void {
 
 // Sinh ra ma trận
 CreateMatrix.button.onclick = async () => {
-    await createMatrixFunc(file, G, s, t, Pannel, MenuConfig, ViewMode, Algorithm, handleClickCell);
+    // Truyền vào 2 hàm callback luôn
+    await createMatrixFunc(file, G, s, t, Pannel, MenuConfig, ViewMode, Algorithm, handleClickCell, () => {
+        s = 0;
+        t = 0;
+    });
 }
 
 // USE CASE 2: CẬP NHẬT TRỌNG SỐ TRÊN GIAO DIỆN

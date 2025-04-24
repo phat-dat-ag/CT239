@@ -3,10 +3,10 @@ import { readFileAsText } from "../utils/file.utils.js";
 import { randomFromZeroTo, checkInput } from "../utils/calculate.utils.js";
 import { drawGraph } from "../draw/draw.js";
 import { GraphType } from "../type/graph.types.js";
-import { HandleClickCell } from "../type/common.types.js";
+import { HandleClickCell, SetSAndT } from "../type/common.types.js";
 import { viewModeSelection } from "../constant/common.constant.js";
 
-export async function createMatrixFunc(file: File | null, G: GraphType, s: number | null, t: number | null, Pannel: any, MenuConfig: any, ViewMode: any, Algorithm: any, handleClickCell: HandleClickCell) {
+export async function createMatrixFunc(file: File | null, G: GraphType, s: number | null, t: number | null, Pannel: any, MenuConfig: any, ViewMode: any, Algorithm: any, handleClickCell: HandleClickCell, setSAndT: SetSAndT) {
     // Tắt pannel mỗi khi random lại
     turnOffDiv([Pannel.container]);
     let matrix: Array<Array<number>> = [];
@@ -48,9 +48,8 @@ export async function createMatrixFunc(file: File | null, G: GraphType, s: numbe
         const n: number = G.getColumnCount();
         const weightMatrix: Array<Array<number>> = G.getWeightMatrix();
         drawGraph(viewModeSelection.WEIGHT_GRAPH, m, n, weightMatrix, handleClickCell);
-        // Đặt lại s và t
-        s = 0;
-        t = 0;
+        // Đặt lại s và t trên global
+        setSAndT();
         // Đặt max và value cho start/ end vertex input
         MenuConfig.startInput.max = `${G.getNodeCount()}`;
         MenuConfig.startInput.value = `${s}`;
