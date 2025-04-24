@@ -1,7 +1,7 @@
-import { Edge } from "./type/edge.types.js";
+import { Edge } from "../type/edge.types.js";
 
 // Cấu trúc đồ thị danh sách cung
-export default class Graph_EdgeList {
+export default class EdgeListGraph {
     edges: Array<Edge>;
     n: number;
     m: number;

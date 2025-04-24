@@ -1,4 +1,4 @@
-import Graph_EdgeList from "../Graph_EdgeList.js";
+import Graph_EdgeList from "../graph/EdgeListGraph.js";
 import { Point } from "./common.types.js";
 
 // Đồ thị: Đỉnh- Đỉnh

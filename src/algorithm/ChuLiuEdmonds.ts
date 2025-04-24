@@ -1,7 +1,7 @@
 import { drawDirectedTree } from "../vis/visGraph.js";
 import { Check_Connected_Division } from "./TreeRecursion.js";
-import Graph_EdgeList from "../Graph_EdgeList.js";
-import Tree from "../Graph_Tree.js";
+import Graph_EdgeList from "../graph/EdgeListGraph.js";
+import Tree from "../graph/ChuLiuEdmondsGraph.js";
 import { GraphType } from "../type/graph.types.js";
 import { DirectedTree } from "../type/common.types.js";
 import { OO } from "../constant/common.constant.js";

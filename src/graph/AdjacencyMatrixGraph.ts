@@ -1,9 +1,9 @@
-import Graph_EdgeList from "./Graph_EdgeList.js";
-import { Point } from "./type/common.types.js";
-import { NO_EDGE, directions } from "./constant/common.constant.js";
-import { getPointFromVertex, getVertexFromPoint } from "./utils/calculate.utils.js";
+import Graph_EdgeList from "./EdgeListGraph.js";
+import { Point } from "../type/common.types.js";
+import { NO_EDGE, directions } from "../constant/common.constant.js";
+import { getPointFromVertex, getVertexFromPoint } from "../utils/calculate.utils.js";
 
-export default class Graph {
+export default class AdjacencyMatrixGraph {
     private weightMatrix: Array<Array<number>>;
     private m: number;
     private n: number;

@@ -1,4 +1,4 @@
-import Graph from "./Graph.js";
+import Graph from "./graph/AdjacencyMatrixGraph.js";
 import { Point } from "./type/common.types.js";
 import { CreateMatrix, ViewMode, Algorithm, Pannel, MenuConfig } from "./dom/domElements.js";
 import { methodOptions, speedOptions, viewModeOptions, algorithmOptions } from "./constant/options.constant.js";

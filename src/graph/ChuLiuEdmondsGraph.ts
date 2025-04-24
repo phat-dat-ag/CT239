@@ -1,7 +1,7 @@
-import { OO } from "./constant/common.constant.js";
+import { OO } from "../constant/common.constant.js";
 
 // Cấu trúc Cây (đồ thị xấp xỉ)
-export default class Tree {
+export default class ChuLiuEdmondsGraph {
     n: number;
     parent: Array<number> = [];
     weight: Array<number> = [];
